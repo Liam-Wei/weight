@@ -174,8 +174,8 @@
                     <label class="text-sm text-gray-600">数量 (默认 g / ml)
                         <input id="food-amount" type="number" inputmode="decimal" placeholder="例如 250" class="mt-1 w-full rounded-2xl border border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-400 px-3 py-3 text-base focus:outline-none focus:ring-2 focus:ring-emerald-500/30" />
                     </label>
-                    <label class="text-sm text-gray-600">单位热量 (kcal 或 kJ / 100 单位)
-                        <input id="food-unit-kcal" type="number" inputmode="decimal" placeholder="例如 54（每100g/100ml）；或 1902（kJ/100g）" class="mt-1 w-full rounded-2xl border border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-400 px-3 py-3 text-base focus:outline-none focus:ring-2 focus:ring-emerald-500/30" />
+                    <label class="text-sm text-gray-600">单位热量 (kJ / 100 单位)
+                        <input id="food-unit-kcal" type="number" inputmode="decimal" placeholder="例如 54" class="mt-1 w-full rounded-2xl border border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-400 px-3 py-3 text-base focus:outline-none focus:ring-2 focus:ring-emerald-500/30" />
                     </label>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -201,10 +201,14 @@
                         </div>
                     </div>
                 </div>
-                <p class="text-xs text-gray-500">*跑步按 100 kcal ≈ 9 分钟，跳绳按 100 kcal ≈ 7 分钟，哑铃无氧按 100 kcal ≈ 15 分钟估算</p>
-                <button onclick="calcFoodKcal()" class="w-full h-12 rounded-2xl bg-emerald-600 text-white font-semibold shadow-lg active:scale-95 transition-transform flex items-center justify-center gap-2 hover:bg-emerald-700">
-                    <i class="fas fa-calculator"></i> 计算并记录
-                </button>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <button onclick="calcFoodOnly()" class="w-full h-12 rounded-2xl bg-white text-emerald-600 font-semibold shadow-sm border border-emerald-100 active:scale-95 transition-transform flex items-center justify-center gap-2 hover:bg-emerald-50">
+                        <i class="fas fa-equals"></i> 计算
+                    </button>
+                    <button onclick="calcFoodKcal()" class="w-full h-12 rounded-2xl bg-emerald-600 text-white font-semibold shadow-lg active:scale-95 transition-transform flex items-center justify-center gap-2 hover:bg-emerald-700">
+                        <i class="fas fa-calculator"></i> 记录
+                    </button>
+                </div>
             </div>
 
             <!-- 历史查询列表 -->
@@ -300,7 +304,8 @@
             logs: [],
             currentUnit: 'kg', // 输入时的单位
             userHeight: 172, // 默认身高，会存储在闭包中
-            foodUnit: 'g' // g 或 ml
+            foodUnit: 'g', // g 或 ml
+            foodHeatUnit: 'kj' // kcal 或 kj，默认按 kJ 常见标注
         };
         let chartInstance = null;
 
@@ -698,28 +703,69 @@
             }
         };
 
-        // 5.2 计算并记录食材热量
-        window.calcFoodKcal = async () => {
+        // 6.2 热量单位切换
+        window.setFoodHeatUnit = (unit) => {
+            appData.foodHeatUnit = unit;
+            const kcalBtn = document.getElementById('btn-heat-kcal');
+            const kjBtn = document.getElementById('btn-heat-kj');
+            if (unit === 'kcal') {
+                kcalBtn.className = "px-3 py-1 rounded-md bg-white shadow text-emerald-600 border border-emerald-100";
+                kjBtn.className = "px-3 py-1 rounded-md text-gray-500 border border-gray-200";
+            } else {
+                kjBtn.className = "px-3 py-1 rounded-md bg-white shadow text-emerald-600 border border-emerald-100";
+                kcalBtn.className = "px-3 py-1 rounded-md text-gray-500 border border-gray-200";
+            }
+        };
+
+        // 5.2 计算食材热量（基础逻辑，支持仅计算/计算并记录）
+        function calcFoodBase() {
             const name = (els.foodName.value || '未命名食材').trim();
             const amount = parseFloat(els.foodAmount.value);
             const per100 = parseFloat(els.foodUnitKcal.value);
             if (!amount || !per100) {
                 showToast("请填写数量和单位热量");
-                return;
+                return null;
             }
             const totalPer100 = (amount * per100) / 100;
-            const isKjPer100 = per100 > 1000;
-            const totalKcal = isKjPer100 ? (totalPer100 / 4.184) : totalPer100;
-            const totalKcalInt = Math.round(totalKcal);
+            const isKjPer100 = appData.foodHeatUnit === 'kj';
+            // kJ -> kcal 按 4.184 换算；kcal 直接使用
+            const totalKcalRaw = isKjPer100 ? (totalPer100 / 4.184) : totalPer100;
+            const totalKcalInt = Math.round(totalKcalRaw);
             els.foodTotal.innerText = String(totalKcalInt);
 
             // 运动折算：跑步/跳绳/哑铃
             const run = (totalKcalInt / 100) * 9;
             const rope = (totalKcalInt / 100) * 7;
             const dumbbell = (totalKcalInt / 100) * 15;
-            els.calcRun.innerText = Math.round(run);
-            els.calcRope.innerText = Math.round(rope);
-            els.calcDumbbell.innerText = Math.round(dumbbell);
+            const runInt = Math.round(run);
+            const ropeInt = Math.round(rope);
+            const dumbbellInt = Math.round(dumbbell);
+            els.calcRun.innerText = runInt;
+            els.calcRope.innerText = ropeInt;
+            els.calcDumbbell.innerText = dumbbellInt;
+
+            return {
+                name,
+                amount,
+                per100,
+                isKjPer100,
+                totalKcalInt,
+                runInt,
+                ropeInt,
+                dumbbellInt
+            };
+        }
+
+        // 仅计算（不入库）
+        window.calcFoodOnly = () => {
+            const result = calcFoodBase();
+            if (!result) return;
+        };
+
+        // 计算并记录食材热量
+        window.calcFoodKcal = async () => {
+            const result = calcFoodBase();
+            if (!result) return;
 
             const now = new Date();
             const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).toString().padStart(2,'0')}:${String(now.getMinutes()).toString().padStart(2,'0')}`;
@@ -727,16 +773,16 @@
             const newDoc = {
                 date: dateStr,
                 type: "food_calc",
-                value: totalKcalInt,
-                note: `${name} · ${amount}${appData.foodUnit} · ${per100}${isKjPer100 ? 'kJ' : 'kcal'}/100${appData.foodUnit} · 跑${Math.round(run)}分 / 绳${Math.round(rope)}分 / 哑${Math.round(dumbbell)}分`,
-                foodName: name,
-                amount,
+                value: result.totalKcalInt,
+                note: `${result.name} · ${result.amount}${appData.foodUnit} · ${result.per100}${result.isKjPer100 ? 'kJ' : 'kcal'}/100${appData.foodUnit} · 跑${result.runInt}分 / 绳${result.ropeInt}分 / 哑${result.dumbbellInt}分`,
+                foodName: result.name,
+                amount: result.amount,
                 unit: appData.foodUnit,
-                per100,
-                per100Unit: isKjPer100 ? 'kJ' : 'kcal',
-                run: Math.round(run),
-                rope: Math.round(rope),
-                dumbbell: Math.round(dumbbell),
+                per100: result.per100,
+                per100Unit: result.isKjPer100 ? 'kJ' : 'kcal',
+                run: result.runInt,
+                rope: result.ropeInt,
+                dumbbell: result.dumbbellInt,
                 timestamp: serverTimestamp()
             };
             try {
