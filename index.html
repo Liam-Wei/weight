@@ -55,12 +55,12 @@
                     <h1 class="text-3xl font-bold text-gray-900">健康概览</h1>
                     <p class="text-sm text-gray-500" id="current-date">加载中...</p>
                 </div>
-                <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+                <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
                     <i class="fas fa-user"></i>
                 </div>
             </header>
 
-            <div class="bg-white rounded-3xl p-6 shadow-sm shadow-blue-100/50 mb-6 border border-gray-100">
+            <div class="bg-white rounded-3xl p-6 shadow-sm shadow-emerald-100/50 mb-6 border border-gray-100">
                 <div class="flex justify-between items-start mb-2">
                     <span class="text-gray-500 font-medium text-sm uppercase tracking-wider">最新体重</span>
                     <span class="bg-green-100 text-green-600 text-xs px-2 py-1 rounded-full" id="weight-trend-badge">-</span>
@@ -73,16 +73,34 @@
             </div>
 
             <div class="grid grid-cols-2 gap-4 mb-6">
-                <div class="bg-blue-600 rounded-3xl p-5 shadow-lg shadow-blue-500/30 text-white">
-                    <p class="text-blue-100 text-sm mb-1">BMI 指数</p>
-                    <h3 id="display-bmi" class="text-3xl font-bold">--</h3>
-                    <p id="bmi-status" class="text-xs mt-1 opacity-80">未知</p>
+                <div class="bg-emerald-50 rounded-3xl p-5 shadow-sm border border-emerald-100">
+                    <p class="text-emerald-700 text-sm mb-1">BMI 指数</p>
+                    <h3 id="display-bmi" class="text-3xl font-bold text-gray-900">--</h3>
+                    <p id="bmi-status" class="text-xs mt-1 text-emerald-700 opacity-80">未知</p>
                 </div>
-                <div class="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 flex flex-col justify-center">
-                    <p class="text-gray-500 text-sm mb-1">体重变化</p>
+                <div class="bg-emerald-50 rounded-3xl p-5 shadow-sm border border-emerald-100 flex flex-col justify-center">
+                    <p class="text-emerald-700 text-sm mb-1">体重变化</p>
                     <h3 id="weight-change" class="text-2xl font-bold text-gray-900">--</h3>
                     <p id="weight-change-desc" class="text-xs text-gray-400 mt-1">等待新记录</p>
                 </div>
+            </div>
+
+            <div id="home-add-card" class="bg-white rounded-3xl p-6 shadow-sm mb-6 border border-gray-100">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-lg text-gray-900">记录体重</h3>
+                    <div class="flex bg-gray-100 rounded-lg p-1 shrink-0">
+                        <button onclick="setUnit('kg')" id="btn-unit-kg" class="px-3 py-1 rounded-md text-sm font-medium transition-all bg-white shadow text-emerald-600">KG</button>
+                        <button onclick="setUnit('jin')" id="btn-unit-jin" class="px-3 py-1 rounded-md text-sm font-medium text-gray-500 transition-all">斤</button>
+                    </div>
+                </div>
+
+                <div class="flex items-center border-b-2 border-emerald-500 pb-2 mb-5">
+                    <input type="number" id="input-weight" step="0.1" placeholder="0.0" class="w-full text-4xl font-bold bg-transparent outline-none text-gray-900">
+                </div>
+
+                <button onclick="saveWeight()" id="btn-save-weight" class="w-full bg-emerald-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg active:scale-95 transition-transform flex justify-center items-center hover:bg-emerald-700">
+                    <span>保存记录</span>
+                </button>
             </div>
 
             <div>
@@ -93,40 +111,30 @@
             </div>
         </section>
 
-        <section id="view-add" class="view-section hidden fade-in">
-            <h2 class="text-2xl font-bold mb-6">记录体重</h2>
-            
-            <div class="bg-white rounded-3xl p-6 shadow-sm mb-6">
-                <label class="block text-sm font-medium text-gray-500 mb-2">当前体重</label>
-                <div class="flex items-center border-b-2 border-blue-500 pb-2 mb-4">
-                    <input type="number" id="input-weight" step="0.1" placeholder="0.0" class="w-full text-4xl font-bold bg-transparent outline-none text-gray-900">
-                    
-                    <div class="flex bg-gray-100 rounded-lg p-1 shrink-0 ml-2">
-                        <button onclick="setUnit('kg')" id="btn-unit-kg" class="px-3 py-1 rounded-md text-sm font-medium transition-all bg-white shadow text-blue-600">KG</button>
-                        <button onclick="setUnit('jin')" id="btn-unit-jin" class="px-3 py-1 rounded-md text-sm font-medium text-gray-500 transition-all">斤</button>
-                    </div>
-                </div>
-
-                <label class="block text-sm font-medium text-gray-500 mb-2 mt-4">身高 (cm, 仅需输入一次)</label>
-                <div class="flex items-center border-b border-gray-200 pb-2">
-                    <input type="number" id="input-height" placeholder="175" class="w-full text-xl font-semibold bg-transparent outline-none">
-                    <span class="text-gray-400">cm</span>
-                </div>
-            </div>
-
-            <button onclick="saveWeight()" id="btn-save-weight" class="w-full bg-black text-white py-4 rounded-2xl font-bold text-lg shadow-lg active:scale-95 transition-transform flex justify-center items-center">
-                <span>保存记录</span>
-            </button>
-        </section>
-
         <section id="view-trend" class="view-section hidden fade-in">
             <h2 class="text-2xl font-bold mb-6">趋势分析</h2>
 
             <div class="flex space-x-2 mb-6 overflow-x-auto no-scrollbar">
-                <button data-range="7" onclick="filterChart(7)" class="filter-btn active px-4 py-2 bg-black text-white rounded-full text-sm font-medium whitespace-nowrap">最近7天</button>
-                <button data-range="30" onclick="filterChart(30)" class="filter-btn px-4 py-2 bg-gray-200 text-gray-600 rounded-full text-sm font-medium whitespace-nowrap">最近30天</button>
-                <button data-range="60" onclick="filterChart(60)" class="filter-btn px-4 py-2 bg-gray-200 text-gray-600 rounded-full text-sm font-medium whitespace-nowrap">最近60天</button>
-                <button data-range="999" onclick="filterChart(999)" class="filter-btn px-4 py-2 bg-gray-200 text-gray-600 rounded-full text-sm font-medium whitespace-nowrap">全部历史</button>
+                <button data-range="7" onclick="filterChart(7)" class="filter-btn active px-4 py-2 bg-emerald-600 text-white rounded-full text-sm font-medium whitespace-nowrap">最近7天</button>
+                <button data-range="30" onclick="filterChart(30)" class="filter-btn px-4 py-2 bg-emerald-50 text-emerald-700 rounded-full text-sm font-medium whitespace-nowrap">最近30天</button>
+                <button data-range="60" onclick="filterChart(60)" class="filter-btn px-4 py-2 bg-emerald-50 text-emerald-700 rounded-full text-sm font-medium whitespace-nowrap">最近60天</button>
+                <button data-range="999" onclick="filterChart(999)" class="filter-btn px-4 py-2 bg-emerald-50 text-emerald-700 rounded-full text-sm font-medium whitespace-nowrap">全部历史</button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="bg-white rounded-3xl p-5 shadow-sm border border-gray-100">
+                    <p class="text-gray-500 text-sm mb-1">当前体重</p>
+                    <h3 id="trend-current-weight" class="text-2xl font-bold text-gray-900">--</h3>
+                    <p id="trend-current-time" class="text-xs text-gray-400 mt-1">--</p>
+                </div>
+                <div class="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 flex flex-col justify-center">
+                    <div class="flex items-center justify-between">
+                        <p class="text-gray-500 text-sm">区间变化</p>
+                        <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full" id="trend-change-badge">-</span>
+                    </div>
+                    <h3 id="trend-change" class="text-2xl font-bold text-gray-900 mt-1">--</h3>
+                    <p id="trend-change-desc" class="text-xs text-gray-400 mt-1">--</p>
+                </div>
             </div>
 
             <div class="bg-white p-4 rounded-3xl shadow-sm h-80 relative mb-6">
@@ -143,54 +151,58 @@
                     <p id="stat-min" class="text-xl font-bold text-gray-900 mt-1">--</p>
                 </div>
             </div>
+
+            <button onclick="openWeightHistoryModal()" class="w-full mt-4 bg-emerald-600 text-white py-3 rounded-2xl font-semibold shadow-sm active:scale-95 transition-transform hover:bg-emerald-700">
+                查看全部历史
+            </button>
         </section>
 
         <section id="view-calc" class="view-section hidden fade-in">
             <h2 class="text-2xl font-bold mb-6">热量换算</h2>
             
             <!-- 统一热量计算卡片（渐变） -->
-            <div class="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-3xl p-6 text-white shadow-lg mb-6 space-y-4">
+            <div class="bg-white rounded-3xl p-6 shadow-sm mb-6 space-y-4 border border-gray-100">
                 <div class="flex items-center justify-between">
                     <div>
-                        <h3 class="text-2xl font-bold">食材热量 & 运动折算</h3>
+                        <h3 class="text-2xl font-bold text-gray-900">食材热量 & 运动折算</h3>
                     </div>
                 </div>
                 <div class="grid grid-cols-1 gap-3">
-                    <label class="text-sm text-indigo-50">食品名称
-                        <input id="food-name" type="text" placeholder="如：燕麦奶" class="mt-1 w-full rounded-2xl border border-white/30 bg-white/10 text-white placeholder-indigo-200 px-3 py-3 text-base focus:outline-none focus:ring-2 focus:ring-white/70" />
+                    <label class="text-sm text-gray-600">食品名称
+                        <input id="food-name" type="text" placeholder="如：燕麦奶" class="mt-1 w-full rounded-2xl border border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-400 px-3 py-3 text-base focus:outline-none focus:ring-2 focus:ring-emerald-500/30" />
                     </label>
-                    <label class="text-sm text-indigo-50">数量 (默认 g / ml)
-                        <input id="food-amount" type="number" inputmode="decimal" placeholder="例如 250" class="mt-1 w-full rounded-2xl border border-white/30 bg-white/10 text-white placeholder-indigo-200 px-3 py-3 text-base focus:outline-none focus:ring-2 focus:ring-white/70" />
+                    <label class="text-sm text-gray-600">数量 (默认 g / ml)
+                        <input id="food-amount" type="number" inputmode="decimal" placeholder="例如 250" class="mt-1 w-full rounded-2xl border border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-400 px-3 py-3 text-base focus:outline-none focus:ring-2 focus:ring-emerald-500/30" />
                     </label>
-                    <label class="text-sm text-indigo-50">单位热量 (kcal / 100 单位)
-                        <input id="food-unit-kcal" type="number" inputmode="decimal" placeholder="例如 54（表示每100g或100ml）" class="mt-1 w-full rounded-2xl border border-white/30 bg-white/10 text-white placeholder-indigo-200 px-3 py-3 text-base focus:outline-none focus:ring-2 focus:ring-white/70" />
+                    <label class="text-sm text-gray-600">单位热量 (kcal 或 kJ / 100 单位)
+                        <input id="food-unit-kcal" type="number" inputmode="decimal" placeholder="例如 54（每100g/100ml）；或 1902（kJ/100g）" class="mt-1 w-full rounded-2xl border border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-400 px-3 py-3 text-base focus:outline-none focus:ring-2 focus:ring-emerald-500/30" />
                     </label>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <div class="bg-white/15 rounded-2xl px-4 py-3 flex items-center justify-between">
+                    <div class="bg-gray-50 rounded-2xl px-4 py-3 flex items-center justify-between border border-gray-100">
                         <div>
-                            <p class="text-xs text-indigo-100">预估总热量</p>
-                            <p class="text-3xl font-bold" id="food-total-kcal">0</p>
+                            <p class="text-xs text-gray-500">预估总热量</p>
+                            <p class="text-3xl font-bold text-gray-900" id="food-total-kcal">0</p>
                         </div>
-                        <i class="fas fa-utensils text-2xl text-white/80"></i>
+                        <i class="fas fa-utensils text-2xl text-gray-400"></i>
                     </div>
-                    <div class="bg-white/15 rounded-2xl px-4 py-3 grid grid-cols-3 gap-2 text-center">
+                    <div class="bg-gray-50 rounded-2xl px-4 py-3 grid grid-cols-3 gap-2 text-center border border-gray-100">
                         <div>
-                            <p class="text-[11px] text-indigo-100">跑步</p>
-                            <p class="text-xl font-bold"><span id="calc-run">0</span><span class="text-xs ml-1">分钟</span></p>
+                            <p class="text-[11px] text-gray-500">跑步</p>
+                            <p class="text-xl font-bold text-gray-900"><span id="calc-run">0</span><span class="text-xs ml-1 text-gray-500">分钟</span></p>
                         </div>
                         <div>
-                            <p class="text-[11px] text-indigo-100">跳绳</p>
-                            <p class="text-xl font-bold"><span id="calc-rope">0</span><span class="text-xs ml-1">分钟</span></p>
+                            <p class="text-[11px] text-gray-500">跳绳</p>
+                            <p class="text-xl font-bold text-gray-900"><span id="calc-rope">0</span><span class="text-xs ml-1 text-gray-500">分钟</span></p>
                         </div>
                         <div>
-                            <p class="text-[11px] text-indigo-100">哑铃</p>
-                            <p class="text-xl font-bold"><span id="calc-dumbbell">0</span><span class="text-xs ml-1">分钟</span></p>
+                            <p class="text-[11px] text-gray-500">哑铃</p>
+                            <p class="text-xl font-bold text-gray-900"><span id="calc-dumbbell">0</span><span class="text-xs ml-1 text-gray-500">分钟</span></p>
                         </div>
                     </div>
                 </div>
-                <p class="text-xs text-indigo-100">*跑步按 100 kcal ≈ 9 分钟，跳绳按 100 kcal ≈ 7 分钟，哑铃无氧按 100 kcal ≈ 15 分钟估算</p>
-                <button onclick="calcFoodKcal()" class="w-full h-12 rounded-2xl bg-white text-indigo-700 font-semibold shadow-lg active:scale-95 transition-transform flex items-center justify-center gap-2">
+                <p class="text-xs text-gray-500">*跑步按 100 kcal ≈ 9 分钟，跳绳按 100 kcal ≈ 7 分钟，哑铃无氧按 100 kcal ≈ 15 分钟估算</p>
+                <button onclick="calcFoodKcal()" class="w-full h-12 rounded-2xl bg-emerald-600 text-white font-semibold shadow-lg active:scale-95 transition-transform flex items-center justify-center gap-2 hover:bg-emerald-700">
                     <i class="fas fa-calculator"></i> 计算并记录
                 </button>
             </div>
@@ -217,13 +229,9 @@
 
     <nav class="fixed bottom-0 w-full bg-white/90 backdrop-blur-md border-t border-gray-200 pb-safe z-50">
         <div class="flex justify-around items-center h-16">
-            <button onclick="switchView('home')" class="nav-btn text-blue-600 flex flex-col items-center gap-1 w-full h-full justify-center active:scale-90 transition-transform" data-target="home">
+            <button onclick="switchView('home')" class="nav-btn text-emerald-600 flex flex-col items-center gap-1 w-full h-full justify-center active:scale-90 transition-transform" data-target="home">
                 <i class="fas fa-home text-xl"></i>
                 <span class="text-[10px] font-medium">首页</span>
-            </button>
-            <button onclick="switchView('add')" class="nav-btn text-gray-400 flex flex-col items-center gap-1 w-full h-full justify-center active:scale-90 transition-transform" data-target="add">
-                <i class="fas fa-plus-circle text-xl"></i>
-                <span class="text-[10px] font-medium">记录</span>
             </button>
             <button onclick="switchView('trend')" class="nav-btn text-gray-400 flex flex-col items-center gap-1 w-full h-full justify-center active:scale-90 transition-transform" data-target="trend">
                 <i class="fas fa-chart-line text-xl"></i>
@@ -235,6 +243,27 @@
             </button>
         </div>
     </nav>
+
+    <div id="weight-history-modal" class="fixed inset-0 hidden z-[60]">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeWeightHistoryModal()"></div>
+        <div class="absolute inset-x-0 bottom-0 sm:inset-0 sm:flex sm:items-center sm:justify-center">
+            <div class="bg-white w-full sm:max-w-lg sm:rounded-3xl rounded-t-3xl shadow-xl border border-gray-100 max-h-[80vh] flex flex-col">
+                <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500">全部历史</p>
+                        <h3 class="text-lg font-bold text-gray-900">每日体重</h3>
+                    </div>
+                    <button class="w-9 h-9 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center" onclick="closeWeightHistoryModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div id="weight-history-list" class="px-6 py-4 overflow-y-auto text-sm text-gray-700"></div>
+                <div class="px-6 py-4 border-t border-gray-100">
+                    <button class="w-full bg-gray-900 text-white py-3 rounded-2xl font-semibold active:scale-95 transition-transform" onclick="closeWeightHistoryModal()">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div id="toast" class="fixed top-12 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-full shadow-xl opacity-0 transition-opacity duration-300 pointer-events-none z-50 flex items-center gap-2">
         <i class="fas fa-check-circle text-green-400"></i>
@@ -270,7 +299,7 @@
         let appData = {
             logs: [],
             currentUnit: 'kg', // 输入时的单位
-            userHeight: 175, // 默认身高，会存储在闭包中
+            userHeight: 172, // 默认身高，会存储在闭包中
             foodUnit: 'g' // g 或 ml
         };
         let chartInstance = null;
@@ -285,11 +314,15 @@
             bmiStatus: document.getElementById('bmi-status'),
             recentList: document.getElementById('recent-list'),
             inputWeight: document.getElementById('input-weight'),
-            inputHeight: document.getElementById('input-height'),
             calcInput: document.getElementById('calc-input'),
             calcRun: document.getElementById('calc-run'),
             calcRope: document.getElementById('calc-rope'),
             calcDumbbell: document.getElementById('calc-dumbbell'),
+            trendCurrentWeight: document.getElementById('trend-current-weight'),
+            trendCurrentTime: document.getElementById('trend-current-time'),
+            trendChangeBadge: document.getElementById('trend-change-badge'),
+            trendChange: document.getElementById('trend-change'),
+            trendChangeDesc: document.getElementById('trend-change-desc'),
             weightChange: document.getElementById('weight-change'),
             weightChangeDesc: document.getElementById('weight-change-desc'),
             weightTrendBadge: document.getElementById('weight-trend-badge'),
@@ -297,7 +330,9 @@
             foodAmount: document.getElementById('food-amount'),
             foodUnitKcal: document.getElementById('food-unit-kcal'),
             foodTotal: document.getElementById('food-total-kcal'),
-            calcHistory: document.getElementById('calc-history')
+            calcHistory: document.getElementById('calc-history'),
+            weightHistoryModal: document.getElementById('weight-history-modal'),
+            weightHistoryList: document.getElementById('weight-history-list')
         };
 
         // ================= 工具函数 =================
@@ -312,6 +347,65 @@
                 els.toast.classList.add('opacity-0');
             }, 2000);
         };
+
+        window.openWeightHistoryModal = () => {
+            if (!els.weightHistoryModal || !els.weightHistoryList) return;
+            els.weightHistoryModal.classList.remove('hidden');
+            renderWeightHistoryModal();
+        };
+
+        window.closeWeightHistoryModal = () => {
+            if (!els.weightHistoryModal) return;
+            els.weightHistoryModal.classList.add('hidden');
+        };
+
+        function getYmd(dateValue) {
+            const d = toJsDate(dateValue);
+            if (!d || !Number.isFinite(d.getTime())) return '';
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${y}-${m}-${day}`;
+        }
+
+        function renderWeightHistoryModal() {
+            const wrap = els.weightHistoryList;
+            if (!wrap) return;
+            wrap.innerHTML = '';
+
+            const weights = appData.logs
+                .filter(l => l.type === 'weight')
+                .sort((a, b) => getLogDateMs(b) - getLogDateMs(a));
+
+            if (!weights.length) {
+                wrap.innerHTML = '<div class="text-center text-gray-400 py-8">暂无体重记录</div>';
+                return;
+            }
+
+            const byDay = new Map();
+            weights.forEach(l => {
+                const ymd = getYmd(l.date || l.timestamp);
+                if (!ymd) return;
+                if (!byDay.has(ymd)) byDay.set(ymd, l);
+            });
+
+            const days = Array.from(byDay.keys()).sort((a, b) => b.localeCompare(a));
+            days.forEach(ymd => {
+                const item = byDay.get(ymd);
+                const row = document.createElement('div');
+                row.className = 'flex items-center justify-between py-3 border-b border-gray-100';
+                row.innerHTML = `
+                    <div>
+                        <p class="text-sm font-semibold text-gray-900">${ymd}</p>
+                        <p class="text-xs text-gray-400 mt-1">${formatDate(item.date || item.timestamp)}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-base font-bold text-gray-900">${Number(item.value).toFixed(1)} kg</p>
+                    </div>
+                `;
+                wrap.appendChild(row);
+            });
+        }
 
         // 格式化日期
         const toJsDate = (value) => {
@@ -355,10 +449,10 @@
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 if(btn.dataset.target === viewName) {
                     btn.classList.remove('text-gray-400');
-                    btn.classList.add('text-blue-600');
+                    btn.classList.add('text-emerald-600');
                 } else {
                     btn.classList.add('text-gray-400');
-                    btn.classList.remove('text-blue-600');
+                    btn.classList.remove('text-emerald-600');
                 }
             });
 
@@ -375,10 +469,10 @@
             const btnJin = document.getElementById('btn-unit-jin');
             
             if(unit === 'kg') {
-                btnKg.className = "px-3 py-1 rounded-md text-sm font-medium transition-all bg-white shadow text-blue-600";
+                btnKg.className = "px-3 py-1 rounded-md text-sm font-medium transition-all bg-white shadow text-emerald-600";
                 btnJin.className = "px-3 py-1 rounded-md text-sm font-medium text-gray-500 transition-all";
             } else {
-                btnJin.className = "px-3 py-1 rounded-md text-sm font-medium transition-all bg-white shadow text-blue-600";
+                btnJin.className = "px-3 py-1 rounded-md text-sm font-medium transition-all bg-white shadow text-emerald-600";
                 btnKg.className = "px-3 py-1 rounded-md text-sm font-medium text-gray-500 transition-all";
             }
         };
@@ -448,13 +542,6 @@
                     els.weightTrendBadge.className = 'bg-green-100 text-green-600 text-xs px-2 py-1 rounded-full';
                 }
                 
-                // 自动填入之前保存的身高(如果有)
-                // 这里简单处理：如果有身高本地变量，计算BMI
-                // 在实际逻辑中，最好把身高也存入数据库或最新一条记录中，这里简化为本地变量或从最近记录推断(如果记录结构支持)
-                // 为了演示，我们使用页面上的 input-height 的值（如果用户填过）或者默认值
-                const heightInputVal = els.inputHeight.value;
-                if(heightInputVal) appData.userHeight = parseFloat(heightInputVal);
-                
                 // 计算 BMI
                 const heightM = appData.userHeight / 100;
                 const bmi = latest.value / (heightM * heightM);
@@ -483,7 +570,7 @@
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center">
-                                    <i class="fas fa-weight-scale text-blue-500"></i>
+                                    <i class="fas fa-weight-scale text-emerald-500"></i>
                                 </div>
                                 <div>
                                     <p class="font-bold text-gray-800">${Number(log.value).toFixed(1)} kg</p>
@@ -501,7 +588,6 @@
         // 3. 保存体重 (写入)
         window.saveWeight = async () => {
             const rawVal = parseFloat(els.inputWeight.value);
-            const heightVal = parseFloat(els.inputHeight.value);
 
             if (!rawVal) {
                 showToast("请输入体重数值");
@@ -516,9 +602,6 @@
 
             // 单位转换：如果是斤，除以2转为KG存入数据库
             const weightKg = appData.currentUnit === 'jin' ? rawVal / 2 : rawVal;
-
-            // 更新全局身高
-            if(heightVal) appData.userHeight = heightVal;
 
             const now = new Date();
             // 格式化为 YYYY-MM-DD HH:mm
@@ -607,10 +690,10 @@
             const gBtn = document.getElementById('btn-unit-g');
             const mlBtn = document.getElementById('btn-unit-ml');
             if (unit === 'g') {
-                gBtn.className = "px-3 py-1 rounded-md bg-white shadow text-blue-600";
+                gBtn.className = "px-3 py-1 rounded-md bg-white shadow text-emerald-600";
                 mlBtn.className = "px-3 py-1 rounded-md text-gray-500";
             } else {
-                mlBtn.className = "px-3 py-1 rounded-md bg-white shadow text-blue-600";
+                mlBtn.className = "px-3 py-1 rounded-md bg-white shadow text-emerald-600";
                 gBtn.className = "px-3 py-1 rounded-md text-gray-500";
             }
         };
@@ -742,11 +825,11 @@
             const btns = document.querySelectorAll('.filter-btn');
             btns.forEach(b => {
                 if(b.innerText.includes(days === 999 ? '全部' : days + '天')) {
-                    b.classList.remove('bg-gray-200', 'text-gray-600');
-                    b.classList.add('bg-black', 'text-white');
+                    b.classList.remove('bg-emerald-50', 'text-emerald-700');
+                    b.classList.add('bg-emerald-600', 'text-white');
                 } else {
-                    b.classList.add('bg-gray-200', 'text-gray-600');
-                    b.classList.remove('bg-black', 'text-white');
+                    b.classList.add('bg-emerald-50', 'text-emerald-700');
+                    b.classList.remove('bg-emerald-600', 'text-white');
                 }
             });
 
@@ -776,10 +859,51 @@
             });
             const values = weightData.map(d => d.value);
 
+            // 更新趋势区间卡片
+            if (els.trendCurrentWeight && els.trendCurrentTime && els.trendChange && els.trendChangeDesc && els.trendChangeBadge) {
+                const rangeText = days === 999 ? '全部历史' : `最近${days}天`;
+                if (!weightData.length) {
+                    els.trendCurrentWeight.innerText = '--';
+                    els.trendCurrentTime.innerText = '--';
+                    els.trendChange.innerText = '--';
+                    els.trendChangeDesc.innerText = `${rangeText} · 暂无记录`;
+                    els.trendChangeBadge.innerText = '-';
+                    els.trendChangeBadge.className = 'bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full';
+                } else {
+                    const first = weightData[0];
+                    const last = weightData[weightData.length - 1];
+                    els.trendCurrentWeight.innerText = `${Number(last.value).toFixed(1)} kg`;
+                    els.trendCurrentTime.innerText = formatDate(last.date || last.timestamp);
+
+                    const diff = Number(last.value) - Number(first.value);
+                    const sign = diff > 0 ? '+' : '';
+                    els.trendChange.innerText = `${sign}${diff.toFixed(1)} kg`;
+                    if (diff > 0) {
+                        els.trendChangeBadge.innerText = '上升';
+                        els.trendChangeBadge.className = 'bg-red-100 text-red-600 text-xs px-2 py-1 rounded-full';
+                    } else if (diff < 0) {
+                        els.trendChangeBadge.innerText = '下降';
+                        els.trendChangeBadge.className = 'bg-green-100 text-green-600 text-xs px-2 py-1 rounded-full';
+                    } else {
+                        els.trendChangeBadge.innerText = '持平';
+                        els.trendChangeBadge.className = 'bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full';
+                    }
+
+                    const firstTime = formatDate(first.date || first.timestamp);
+                    const lastTime = formatDate(last.date || last.timestamp);
+                    els.trendChangeDesc.innerText = weightData.length === 1
+                        ? `${rangeText} · ${firstTime}（仅1条）`
+                        : `${rangeText} · ${firstTime} → ${lastTime}`;
+                }
+            }
+
             // 更新统计
             if(values.length > 0) {
                 document.getElementById('stat-max').innerText = Math.max(...values).toFixed(1);
                 document.getElementById('stat-min').innerText = Math.min(...values).toFixed(1);
+            } else {
+                document.getElementById('stat-max').innerText = '--';
+                document.getElementById('stat-min').innerText = '--';
             }
 
             // 销毁旧图表
@@ -793,11 +917,11 @@
                     datasets: [{
                         label: '体重 (kg)',
                         data: values,
-                        borderColor: '#2563eb', // blue-600
-                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        borderColor: '#059669', // emerald-600
+                        backgroundColor: 'rgba(16, 185, 129, 0.12)',
                         borderWidth: 3,
                         pointBackgroundColor: '#fff',
-                        pointBorderColor: '#2563eb',
+                        pointBorderColor: '#059669',
                         pointRadius: 4,
                         fill: true,
                         tension: 0.4 // 平滑曲线
