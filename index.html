@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>iDiet Pro</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* iOS 系统字体栈 */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "San Francisco", "Helvetica Neue", sans-serif;
+            /* 防止iOS点击高亮 */
+            -webkit-tap-highlight-color: transparent;
+        }
+        /* 隐藏滚动条但保留滚动功能 */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        /* 底部安全区域适配 */
+        .pb-safe {
+            padding-bottom: env(safe-area-inset-bottom, 20px);
+        }
+        /* 页面切换动画 */
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 h-screen w-screen overflow-hidden flex flex-col">
+
+    <div class="h-12 w-full bg-transparent shrink-0"></div>
+
+    <main id="main-container" class="flex-1 overflow-y-auto no-scrollbar px-6 pb-32 relative">
+        
+        <section id="view-home" class="view-section fade-in">
+            <header class="mb-6 flex justify-between items-center">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900">健康概览</h1>
+                    <p class="text-sm text-gray-500" id="current-date">加载中...</p>
+                </div>
+                <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+                    <i class="fas fa-user"></i>
+                </div>
+            </header>
+
+            <div class="bg-white rounded-3xl p-6 shadow-sm shadow-blue-100/50 mb-6 border border-gray-100">
+                <div class="flex justify-between items-start mb-2">
+                    <span class="text-gray-500 font-medium text-sm uppercase tracking-wider">最新体重</span>
+                    <span class="bg-green-100 text-green-600 text-xs px-2 py-1 rounded-full" id="weight-trend-badge">-</span>
+                </div>
+                <div class="flex items-baseline gap-2">
+                    <span id="display-weight" class="text-5xl font-extrabold text-gray-900">--</span>
+                    <span class="text-xl text-gray-500">kg</span>
+                </div>
+                <p class="text-xs text-gray-400 mt-2" id="last-record-time">暂无记录</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="bg-blue-600 rounded-3xl p-5 shadow-lg shadow-blue-500/30 text-white">
+                    <p class="text-blue-100 text-sm mb-1">BMI 指数</p>
+                    <h3 id="display-bmi" class="text-3xl font-bold">--</h3>
+                    <p id="bmi-status" class="text-xs mt-1 opacity-80">未知</p>
+                </div>
+                <div class="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 flex flex-col justify-center">
+                    <p class="text-gray-500 text-sm mb-1">体重变化</p>
+                    <h3 id="weight-change" class="text-2xl font-bold text-gray-900">--</h3>
+                    <p id="weight-change-desc" class="text-xs text-gray-400 mt-1">等待新记录</p>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="font-bold text-lg mb-4 text-gray-900">最近记录</h3>
+                <ul id="recent-list" class="space-y-3">
+                    <li class="text-center text-gray-400 py-4">正在从云端加载...</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="view-add" class="view-section hidden fade-in">
+            <h2 class="text-2xl font-bold mb-6">记录体重</h2>
+            
+            <div class="bg-white rounded-3xl p-6 shadow-sm mb-6">
+                <label class="block text-sm font-medium text-gray-500 mb-2">当前体重</label>
+                <div class="flex items-center border-b-2 border-blue-500 pb-2 mb-4">
+                    <input type="number" id="input-weight" step="0.1" placeholder="0.0" class="w-full text-4xl font-bold bg-transparent outline-none text-gray-900">
+                    
+                    <div class="flex bg-gray-100 rounded-lg p-1 shrink-0 ml-2">
+                        <button onclick="setUnit('kg')" id="btn-unit-kg" class="px-3 py-1 rounded-md text-sm font-medium transition-all bg-white shadow text-blue-600">KG</button>
+                        <button onclick="setUnit('jin')" id="btn-unit-jin" class="px-3 py-1 rounded-md text-sm font-medium text-gray-500 transition-all">斤</button>
+                    </div>
+                </div>
+
+                <label class="block text-sm font-medium text-gray-500 mb-2 mt-4">身高 (cm, 仅需输入一次)</label>
+                <div class="flex items-center border-b border-gray-200 pb-2">
+                    <input type="number" id="input-height" placeholder="175" class="w-full text-xl font-semibold bg-transparent outline-none">
+                    <span class="text-gray-400">cm</span>
+                </div>
+            </div>
+
+            <button onclick="saveWeight()" id="btn-save-weight" class="w-full bg-black text-white py-4 rounded-2xl font-bold text-lg shadow-lg active:scale-95 transition-transform flex justify-center items-center">
+                <span>保存记录</span>
+            </button>
+        </section>
+
+        <section id="view-trend" class="view-section hidden fade-in">
+            <h2 class="text-2xl font-bold mb-6">趋势分析</h2>
+
+            <div class="flex space-x-2 mb-6 overflow-x-auto no-scrollbar">
+                <button data-range="7" onclick="filterChart(7)" class="filter-btn active px-4 py-2 bg-black text-white rounded-full text-sm font-medium whitespace-nowrap">最近7天</button>
+                <button data-range="30" onclick="filterChart(30)" class="filter-btn px-4 py-2 bg-gray-200 text-gray-600 rounded-full text-sm font-medium whitespace-nowrap">最近30天</button>
+                <button data-range="60" onclick="filterChart(60)" class="filter-btn px-4 py-2 bg-gray-200 text-gray-600 rounded-full text-sm font-medium whitespace-nowrap">最近60天</button>
+                <button data-range="999" onclick="filterChart(999)" class="filter-btn px-4 py-2 bg-gray-200 text-gray-600 rounded-full text-sm font-medium whitespace-nowrap">全部历史</button>
+            </div>
+
+            <div class="bg-white p-4 rounded-3xl shadow-sm h-80 relative mb-6">
+                <canvas id="weightChart"></canvas>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-orange-50 p-4 rounded-2xl">
+                    <p class="text-orange-600 text-xs font-bold uppercase">最高体重</p>
+                    <p id="stat-max" class="text-xl font-bold text-gray-900 mt-1">--</p>
+                </div>
+                <div class="bg-green-50 p-4 rounded-2xl">
+                    <p class="text-green-600 text-xs font-bold uppercase">最低体重</p>
+                    <p id="stat-min" class="text-xl font-bold text-gray-900 mt-1">--</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-calc" class="view-section hidden fade-in">
+            <h2 class="text-2xl font-bold mb-6">热量换算</h2>
+            
+            <!-- 统一热量计算卡片（渐变） -->
+            <div class="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-3xl p-6 text-white shadow-lg mb-6 space-y-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-2xl font-bold">食材热量 & 运动折算</h3>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 gap-3">
+                    <label class="text-sm text-indigo-50">食品名称
+                        <input id="food-name" type="text" placeholder="如：燕麦奶" class="mt-1 w-full rounded-2xl border border-white/30 bg-white/10 text-white placeholder-indigo-200 px-3 py-3 text-base focus:outline-none focus:ring-2 focus:ring-white/70" />
+                    </label>
+                    <label class="text-sm text-indigo-50">数量 (默认 g / ml)
+                        <input id="food-amount" type="number" inputmode="decimal" placeholder="例如 250" class="mt-1 w-full rounded-2xl border border-white/30 bg-white/10 text-white placeholder-indigo-200 px-3 py-3 text-base focus:outline-none focus:ring-2 focus:ring-white/70" />
+                    </label>
+                    <label class="text-sm text-indigo-50">单位热量 (kcal / 100 单位)
+                        <input id="food-unit-kcal" type="number" inputmode="decimal" placeholder="例如 54（表示每100g或100ml）" class="mt-1 w-full rounded-2xl border border-white/30 bg-white/10 text-white placeholder-indigo-200 px-3 py-3 text-base focus:outline-none focus:ring-2 focus:ring-white/70" />
+                    </label>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div class="bg-white/15 rounded-2xl px-4 py-3 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs text-indigo-100">预估总热量</p>
+                            <p class="text-3xl font-bold" id="food-total-kcal">0</p>
+                        </div>
+                        <i class="fas fa-utensils text-2xl text-white/80"></i>
+                    </div>
+                    <div class="bg-white/15 rounded-2xl px-4 py-3 grid grid-cols-3 gap-2 text-center">
+                        <div>
+                            <p class="text-[11px] text-indigo-100">跑步</p>
+                            <p class="text-xl font-bold"><span id="calc-run">0</span><span class="text-xs ml-1">分钟</span></p>
+                        </div>
+                        <div>
+                            <p class="text-[11px] text-indigo-100">跳绳</p>
+                            <p class="text-xl font-bold"><span id="calc-rope">0</span><span class="text-xs ml-1">分钟</span></p>
+                        </div>
+                        <div>
+                            <p class="text-[11px] text-indigo-100">哑铃</p>
+                            <p class="text-xl font-bold"><span id="calc-dumbbell">0</span><span class="text-xs ml-1">分钟</span></p>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-xs text-indigo-100">*跑步按 100 kcal ≈ 9 分钟，跳绳按 100 kcal ≈ 7 分钟，哑铃无氧按 100 kcal ≈ 15 分钟估算</p>
+                <button onclick="calcFoodKcal()" class="w-full h-12 rounded-2xl bg-white text-indigo-700 font-semibold shadow-lg active:scale-95 transition-transform flex items-center justify-center gap-2">
+                    <i class="fas fa-calculator"></i> 计算并记录
+                </button>
+            </div>
+
+            <!-- 历史查询列表 -->
+            <div class="bg-white rounded-3xl p-6 shadow-sm space-y-4 border border-gray-100">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500">历史查询</p>
+                        <h3 class="text-lg font-bold text-gray-900">食材热量记录</h3>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="refreshCalcHistory()" class="text-gray-600 text-sm px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200">刷新</button>
+                        <button onclick="clearCalcHistory()" class="text-red-600 text-sm px-3 py-2 rounded-lg bg-red-50 hover:bg-red-100">清空</button>
+                    </div>
+                </div>
+                <div id="calc-history" class="space-y-3 text-sm text-gray-700">
+                    <div class="text-center text-gray-400 py-4">暂无历史</div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <nav class="fixed bottom-0 w-full bg-white/90 backdrop-blur-md border-t border-gray-200 pb-safe z-50">
+        <div class="flex justify-around items-center h-16">
+            <button onclick="switchView('home')" class="nav-btn text-blue-600 flex flex-col items-center gap-1 w-full h-full justify-center active:scale-90 transition-transform" data-target="home">
+                <i class="fas fa-home text-xl"></i>
+                <span class="text-[10px] font-medium">首页</span>
+            </button>
+            <button onclick="switchView('add')" class="nav-btn text-gray-400 flex flex-col items-center gap-1 w-full h-full justify-center active:scale-90 transition-transform" data-target="add">
+                <i class="fas fa-plus-circle text-xl"></i>
+                <span class="text-[10px] font-medium">记录</span>
+            </button>
+            <button onclick="switchView('trend')" class="nav-btn text-gray-400 flex flex-col items-center gap-1 w-full h-full justify-center active:scale-90 transition-transform" data-target="trend">
+                <i class="fas fa-chart-line text-xl"></i>
+                <span class="text-[10px] font-medium">趋势</span>
+            </button>
+            <button onclick="switchView('calc')" class="nav-btn text-gray-400 flex flex-col items-center gap-1 w-full h-full justify-center active:scale-90 transition-transform" data-target="calc">
+                <i class="fas fa-calculator text-xl"></i>
+                <span class="text-[10px] font-medium">计算</span>
+            </button>
+        </div>
+    </nav>
+
+    <div id="toast" class="fixed top-12 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-full shadow-xl opacity-0 transition-opacity duration-300 pointer-events-none z-50 flex items-center gap-2">
+        <i class="fas fa-check-circle text-green-400"></i>
+        <span id="toast-msg">保存成功</span>
+    </div>
+
+    <script type="module">
+        // 1. 导入 Firebase 模块 (使用 CDN)
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+        import { 
+            getFirestore, collection, addDoc, getDocs, query, orderBy, limit, serverTimestamp, doc, deleteDoc
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // 2. Firebase 配置 (用户提供)
+        const firebaseConfig = {
+            apiKey: "AIzaSyCtj6rwIsC0niDMfkidV0AcvtA8gcuT3NE",
+            authDomain: "weight-29113.firebaseapp.com",
+            projectId: "weight-29113",
+            storageBucket: "weight-29113.firebasestorage.app",
+            messagingSenderId: "452663997314",
+            appId: "1:452663997314:web:c6e230824ec83634e1559b",
+            measurementId: "G-DXMS6X7H22"
+        };
+
+        // 3. 初始化 Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getFirestore(app);
+        const COLLECTION_NAME = "diet_logs";
+
+        // 4. 全局状态
+        let appData = {
+            logs: [],
+            currentUnit: 'kg', // 输入时的单位
+            userHeight: 175, // 默认身高，会存储在闭包中
+            foodUnit: 'g' // g 或 ml
+        };
+        let chartInstance = null;
+
+        // 5. DOM 元素引用
+        const els = {
+            toast: document.getElementById('toast'),
+            toastMsg: document.getElementById('toast-msg'),
+            displayWeight: document.getElementById('display-weight'),
+            lastRecordTime: document.getElementById('last-record-time'),
+            displayBMI: document.getElementById('display-bmi'),
+            bmiStatus: document.getElementById('bmi-status'),
+            recentList: document.getElementById('recent-list'),
+            inputWeight: document.getElementById('input-weight'),
+            inputHeight: document.getElementById('input-height'),
+            calcInput: document.getElementById('calc-input'),
+            calcRun: document.getElementById('calc-run'),
+            calcRope: document.getElementById('calc-rope'),
+            calcDumbbell: document.getElementById('calc-dumbbell'),
+            weightChange: document.getElementById('weight-change'),
+            weightChangeDesc: document.getElementById('weight-change-desc'),
+            weightTrendBadge: document.getElementById('weight-trend-badge'),
+            foodName: document.getElementById('food-name'),
+            foodAmount: document.getElementById('food-amount'),
+            foodUnitKcal: document.getElementById('food-unit-kcal'),
+            foodTotal: document.getElementById('food-total-kcal'),
+            calcHistory: document.getElementById('calc-history')
+        };
+
+        // ================= 工具函数 =================
+
+        // 显示 Toast 提示
+        window.showToast = (msg) => {
+            els.toastMsg.innerText = msg;
+            els.toast.classList.remove('opacity-0');
+            els.toast.classList.add('opacity-100');
+            setTimeout(() => {
+                els.toast.classList.remove('opacity-100');
+                els.toast.classList.add('opacity-0');
+            }, 2000);
+        };
+
+        // 格式化日期
+        const toJsDate = (value) => {
+            if (!value) return null;
+            if (typeof value === 'object' && typeof value.toDate === 'function') {
+                return value.toDate();
+            }
+            if (typeof value === 'string') {
+                const s = value.trim();
+                if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(s)) {
+                    return new Date(s.replace(' ', 'T') + ':00');
+                }
+                if (/^\d{4}-\d{2}-\d{2}$/.test(s)) {
+                    return new Date(s + 'T00:00:00');
+                }
+                return new Date(s);
+            }
+            return new Date(value);
+        };
+
+        const getLogDateMs = (log) => {
+            const d = toJsDate(log?.date) || toJsDate(log?.timestamp);
+            const ms = d?.getTime();
+            return Number.isFinite(ms) ? ms : 0;
+        };
+
+        const formatDate = (value) => {
+            const date = toJsDate(value);
+            if (!date || !Number.isFinite(date.getTime())) return '--';
+            return `${date.getMonth() + 1}/${date.getDate()} ${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
+        };
+
+        // 切换视图
+        window.switchView = (viewName) => {
+            // 隐藏所有 View
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+            // 显示目标 View
+            document.getElementById(`view-${viewName}`).classList.remove('hidden');
+            
+            // 更新底部导航状态
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                if(btn.dataset.target === viewName) {
+                    btn.classList.remove('text-gray-400');
+                    btn.classList.add('text-blue-600');
+                } else {
+                    btn.classList.add('text-gray-400');
+                    btn.classList.remove('text-blue-600');
+                }
+            });
+
+            // 如果切换到趋势页，重新渲染图表
+            if(viewName === 'trend') {
+                if (typeof window.filterChart === 'function') window.filterChart(7); // 默认显示7天
+            }
+        };
+
+        // 设置输入单位 (Kg/Jin)
+        window.setUnit = (unit) => {
+            appData.currentUnit = unit;
+            const btnKg = document.getElementById('btn-unit-kg');
+            const btnJin = document.getElementById('btn-unit-jin');
+            
+            if(unit === 'kg') {
+                btnKg.className = "px-3 py-1 rounded-md text-sm font-medium transition-all bg-white shadow text-blue-600";
+                btnJin.className = "px-3 py-1 rounded-md text-sm font-medium text-gray-500 transition-all";
+            } else {
+                btnJin.className = "px-3 py-1 rounded-md text-sm font-medium transition-all bg-white shadow text-blue-600";
+                btnKg.className = "px-3 py-1 rounded-md text-sm font-medium text-gray-500 transition-all";
+            }
+        };
+
+        // ================= 核心业务逻辑 =================
+
+        // 1. 获取数据 (读取)
+        async function fetchLogs() {
+            try {
+                const querySnapshot = await getDocs(collection(db, COLLECTION_NAME));
+                
+                appData.logs = [];
+                querySnapshot.forEach((doc) => {
+                    appData.logs.push({ id: doc.id, ...doc.data() });
+                });
+
+                appData.logs.sort((a, b) => getLogDateMs(b) - getLogDateMs(a));
+
+                renderHome();
+                renderCalcHistory();
+            } catch (error) {
+                console.error("Error fetching logs: ", error);
+                showToast("数据加载失败");
+            }
+        }
+
+        // 2. 渲染首页
+        function renderHome() {
+            // 设置当前日期
+            const now = new Date();
+            document.getElementById('current-date').innerText = `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日`;
+
+            // 过滤出体重记录
+            const weightLogs = appData.logs.filter(log => log.type === 'weight');
+
+            if (weightLogs.length > 0) {
+                const latest = weightLogs[0];
+                els.displayWeight.innerText = latest.value.toFixed(1);
+                const latestDate = toJsDate(latest.date) || toJsDate(latest.timestamp);
+                if (latestDate && Number.isFinite(latestDate.getTime())) {
+                    els.lastRecordTime.innerText = `记录于 ${String(latestDate.getHours()).padStart(2, '0')}:${String(latestDate.getMinutes()).padStart(2, '0')}`;
+                } else {
+                    els.lastRecordTime.innerText = `记录于 --:--`;
+                }
+                
+                // 体重变化（与上一条对比）
+                if (weightLogs.length > 1) {
+                    const prev = weightLogs[1];
+                    const diff = latest.value - prev.value;
+                    const sign = diff > 0 ? '+' : '';
+                    els.weightChange.innerText = `${sign}${diff.toFixed(1)} kg`;
+                    els.weightChangeDesc.innerText = `较上一条 ${formatDate(prev.date || prev.timestamp)}`;
+                    if (diff > 0) {
+                        els.weightTrendBadge.innerText = '上升';
+                        els.weightTrendBadge.className = 'bg-red-100 text-red-600 text-xs px-2 py-1 rounded-full';
+                    } else if (diff < 0) {
+                        els.weightTrendBadge.innerText = '下降';
+                        els.weightTrendBadge.className = 'bg-green-100 text-green-600 text-xs px-2 py-1 rounded-full';
+                    } else {
+                        els.weightTrendBadge.innerText = '持平';
+                        els.weightTrendBadge.className = 'bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full';
+                    }
+                } else {
+                    els.weightChange.innerText = '--';
+                    els.weightChangeDesc.innerText = '等待新记录';
+                    els.weightTrendBadge.innerText = '-';
+                    els.weightTrendBadge.className = 'bg-green-100 text-green-600 text-xs px-2 py-1 rounded-full';
+                }
+                
+                // 自动填入之前保存的身高(如果有)
+                // 这里简单处理：如果有身高本地变量，计算BMI
+                // 在实际逻辑中，最好把身高也存入数据库或最新一条记录中，这里简化为本地变量或从最近记录推断(如果记录结构支持)
+                // 为了演示，我们使用页面上的 input-height 的值（如果用户填过）或者默认值
+                const heightInputVal = els.inputHeight.value;
+                if(heightInputVal) appData.userHeight = parseFloat(heightInputVal);
+                
+                // 计算 BMI
+                const heightM = appData.userHeight / 100;
+                const bmi = latest.value / (heightM * heightM);
+                els.displayBMI.innerText = bmi.toFixed(1);
+                
+                // BMI 状态
+                let status = "正常";
+                if(bmi < 18.5) status = "偏瘦";
+                else if(bmi >= 24 && bmi < 27) status = "过重";
+                else if(bmi >= 27) status = "肥胖";
+                els.bmiStatus.innerText = status;
+            } else {
+                els.displayWeight.innerText = "--";
+            }
+
+            // 渲染列表 (取前5条)
+            els.recentList.innerHTML = "";
+            const recentWeights = weightLogs.slice(0, 5);
+            if (!recentWeights.length) {
+                els.recentList.innerHTML = '<li class="text-center text-gray-400 py-4">暂无体重记录</li>';
+            } else {
+                recentWeights.forEach(log => {
+                    const li = document.createElement('li');
+                    li.className = "bg-white border border-gray-100 rounded-2xl px-4 py-3 shadow-sm";
+                    li.innerHTML = `
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center">
+                                    <i class="fas fa-weight-scale text-blue-500"></i>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-gray-800">${Number(log.value).toFixed(1)} kg</p>
+                                    <p class="text-xs text-gray-400">${formatDate(log.date || log.timestamp)}</p>
+                                </div>
+                            </div>
+                            <button class="text-red-500 text-sm px-3 py-2 rounded-lg hover:bg-red-50" onclick="deleteWeightItem('${log.id}')">删除</button>
+                        </div>
+                    `;
+                    els.recentList.appendChild(li);
+                });
+            }
+        }
+
+        // 3. 保存体重 (写入)
+        window.saveWeight = async () => {
+            const rawVal = parseFloat(els.inputWeight.value);
+            const heightVal = parseFloat(els.inputHeight.value);
+
+            if (!rawVal) {
+                showToast("请输入体重数值");
+                return;
+            }
+
+            // 加载动画状态
+            const btn = document.getElementById('btn-save-weight');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> 保存中...`;
+            btn.disabled = true;
+
+            // 单位转换：如果是斤，除以2转为KG存入数据库
+            const weightKg = appData.currentUnit === 'jin' ? rawVal / 2 : rawVal;
+
+            // 更新全局身高
+            if(heightVal) appData.userHeight = heightVal;
+
+            const now = new Date();
+            // 格式化为 YYYY-MM-DD HH:mm
+            const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+            const newDoc = {
+                date: dateStr,
+                type: "weight",
+                value: weightKg,
+                note: "",
+                timestamp: serverTimestamp()
+            };
+
+            try {
+                await addDoc(collection(db, COLLECTION_NAME), newDoc);
+                showToast("体重记录成功");
+                
+                // 清空输入
+                els.inputWeight.value = "";
+                
+                // 刷新数据并切回首页
+                await fetchLogs();
+                switchView('home');
+            } catch (e) {
+                console.error("Error adding document: ", e);
+                showToast("保存失败，请检查网络");
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        };
+
+        // 4. 保存饮食/计算结果 (写入)
+        window.saveFoodLog = async () => {
+            if (!els.calcInput) {
+                showToast("该版本未启用热量输入");
+                return;
+            }
+            const kcal = parseFloat(els.calcInput.value);
+            if (!kcal) return;
+
+            const runMins = Math.round((kcal / 100) * 9);
+            const dumbbellMins = Math.round((kcal / 100) * 15);
+            const now = new Date();
+            const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+            const newDoc = {
+                date: dateStr,
+                type: "food",
+                value: kcal, // 存热量
+                note: `摄入 ${kcal} Kcal (跑步约 ${runMins} 分钟 / 哑铃约 ${dumbbellMins} 分钟)`,
+                timestamp: serverTimestamp()
+            };
+
+            try {
+                await addDoc(collection(db, COLLECTION_NAME), newDoc);
+                showToast("饮食记录已保存");
+                els.calcInput.value = "";
+                els.calcRun.innerText = "0";
+                els.calcDumbbell.innerText = "0";
+                await fetchLogs(); // 后台刷新
+            } catch (e) {
+                showToast("保存失败");
+            }
+        };
+
+        // 5. 计算器逻辑
+        els.calcInput?.addEventListener('input', (e) => {
+            const val = parseFloat(e.target.value);
+            if(val) {
+                // 200g苹果=100kcal=跑步9分钟
+                // 比例：100kcal = 9 mins
+                const run = (val / 100) * 9;
+                const dumbbell = (val / 100) * 15; // 粗略估算
+                els.calcRun.innerText = Math.round(run);
+                els.calcDumbbell.innerText = Math.round(dumbbell);
+            } else {
+                els.calcRun.innerText = 0;
+                els.calcDumbbell.innerText = 0;
+            }
+        });
+
+        // 6.1 食材单位切换
+        window.setFoodUnit = (unit) => {
+            appData.foodUnit = unit;
+            const gBtn = document.getElementById('btn-unit-g');
+            const mlBtn = document.getElementById('btn-unit-ml');
+            if (unit === 'g') {
+                gBtn.className = "px-3 py-1 rounded-md bg-white shadow text-blue-600";
+                mlBtn.className = "px-3 py-1 rounded-md text-gray-500";
+            } else {
+                mlBtn.className = "px-3 py-1 rounded-md bg-white shadow text-blue-600";
+                gBtn.className = "px-3 py-1 rounded-md text-gray-500";
+            }
+        };
+
+        // 5.2 计算并记录食材热量
+        window.calcFoodKcal = async () => {
+            const name = (els.foodName.value || '未命名食材').trim();
+            const amount = parseFloat(els.foodAmount.value);
+            const per100 = parseFloat(els.foodUnitKcal.value);
+            if (!amount || !per100) {
+                showToast("请填写数量和单位热量");
+                return;
+            }
+            const totalPer100 = (amount * per100) / 100;
+            const isKjPer100 = per100 > 1000;
+            const totalKcal = isKjPer100 ? (totalPer100 / 4.184) : totalPer100;
+            const totalKcalInt = Math.round(totalKcal);
+            els.foodTotal.innerText = String(totalKcalInt);
+
+            // 运动折算：跑步/跳绳/哑铃
+            const run = (totalKcalInt / 100) * 9;
+            const rope = (totalKcalInt / 100) * 7;
+            const dumbbell = (totalKcalInt / 100) * 15;
+            els.calcRun.innerText = Math.round(run);
+            els.calcRope.innerText = Math.round(rope);
+            els.calcDumbbell.innerText = Math.round(dumbbell);
+
+            const now = new Date();
+            const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).toString().padStart(2,'0')}:${String(now.getMinutes()).toString().padStart(2,'0')}`;
+
+            const newDoc = {
+                date: dateStr,
+                type: "food_calc",
+                value: totalKcalInt,
+                note: `${name} · ${amount}${appData.foodUnit} · ${per100}${isKjPer100 ? 'kJ' : 'kcal'}/100${appData.foodUnit} · 跑${Math.round(run)}分 / 绳${Math.round(rope)}分 / 哑${Math.round(dumbbell)}分`,
+                foodName: name,
+                amount,
+                unit: appData.foodUnit,
+                per100,
+                per100Unit: isKjPer100 ? 'kJ' : 'kcal',
+                run: Math.round(run),
+                rope: Math.round(rope),
+                dumbbell: Math.round(dumbbell),
+                timestamp: serverTimestamp()
+            };
+            try {
+                await addDoc(collection(db, COLLECTION_NAME), newDoc);
+                showToast("已记录食材热量");
+                await fetchLogs();
+            } catch (e) {
+                console.error(e);
+                showToast("保存失败，请重试");
+            }
+        };
+
+        // 5.3 渲染食材热量历史
+        function renderCalcHistory() {
+            const wrap = els.calcHistory;
+            wrap.innerHTML = "";
+            const items = appData.logs.filter(l => l.type === 'food_calc').slice(0, 30);
+            if (!items.length) {
+                wrap.innerHTML = '<div class="text-center text-gray-400 py-4">暂无历史</div>';
+                return;
+            }
+            items.forEach(item => {
+                const subtitle = item.note || `${item.foodName || '食材'} · ${item.amount || '-'}${item.unit || ''}`;
+                const row = document.createElement('div');
+                row.className = "border border-gray-100 rounded-2xl p-4 flex items-center justify-between shadow-sm";
+                row.innerHTML = `
+                    <div>
+                        <p class="text-base font-semibold text-gray-900">${item.foodName || '食材'} ≈ ${item.value} kcal</p>
+                        <p class="text-xs text-gray-500 mt-1">${subtitle}</p>
+                        <p class="text-[11px] text-gray-400 mt-1">${formatDate(item.date || item.timestamp)}</p>
+                    </div>
+                    <button class="text-red-500 text-sm px-3 py-2 rounded-lg hover:bg-red-50" onclick="deleteHistoryItem('${item.id}')">删除</button>
+                `;
+                wrap.appendChild(row);
+            });
+        }
+
+        // 5.4 删除单条历史
+        window.deleteHistoryItem = async (id) => {
+            try {
+                await deleteDoc(doc(db, COLLECTION_NAME, id));
+                showToast("已删除");
+                await fetchLogs();
+            } catch (e) {
+                console.error(e);
+                showToast("删除失败");
+            }
+        };
+
+        // 删除单条体重记录
+        window.deleteWeightItem = async (id) => {
+            try {
+                const ok = confirm('确定删除这条体重记录吗？');
+                if (!ok) return;
+                await deleteDoc(doc(db, COLLECTION_NAME, id));
+                showToast("已删除");
+                await fetchLogs();
+            } catch (e) {
+                console.error(e);
+                showToast("删除失败");
+            }
+        };
+
+        // 5.5 清空历史
+        window.clearCalcHistory = async () => {
+            try {
+                const snap = await getDocs(collection(db, COLLECTION_NAME));
+                const targets = snap.docs.filter(d => d.data().type === 'food_calc');
+                await Promise.all(targets.map(d => deleteDoc(doc(db, COLLECTION_NAME, d.id))));
+                showToast("已清空历史");
+                await fetchLogs();
+            } catch (e) {
+                console.error(e);
+                showToast("清空失败");
+            }
+        };
+
+        // 5.6 手动刷新历史
+        window.refreshCalcHistory = () => {
+            renderCalcHistory();
+        };
+
+        // 6. 图表逻辑
+        window.filterChart = (days) => {
+            // 更新按钮样式
+            const btns = document.querySelectorAll('.filter-btn');
+            btns.forEach(b => {
+                if(b.innerText.includes(days === 999 ? '全部' : days + '天')) {
+                    b.classList.remove('bg-gray-200', 'text-gray-600');
+                    b.classList.add('bg-black', 'text-white');
+                } else {
+                    b.classList.add('bg-gray-200', 'text-gray-600');
+                    b.classList.remove('bg-black', 'text-white');
+                }
+            });
+
+            renderChart(days);
+        };
+
+        function renderChart(days) {
+            const ctx = document.getElementById('weightChart').getContext('2d');
+            
+            // 过滤数据：只看体重，按时间正序排列
+            let weightData = appData.logs
+                .filter(d => d.type === 'weight')
+                .sort((a, b) => getLogDateMs(a) - getLogDateMs(b));
+
+            // 时间筛选
+            if (days !== 999) {
+                const cutoff = new Date();
+                cutoff.setDate(cutoff.getDate() - days);
+                const cutoffMs = cutoff.getTime();
+                weightData = weightData.filter(d => getLogDateMs(d) >= cutoffMs);
+            }
+
+            // 提取数据
+            const labels = weightData.map(d => {
+                const date = new Date(getLogDateMs(d));
+                return `${date.getMonth() + 1}/${date.getDate()}`;
+            });
+            const values = weightData.map(d => d.value);
+
+            // 更新统计
+            if(values.length > 0) {
+                document.getElementById('stat-max').innerText = Math.max(...values).toFixed(1);
+                document.getElementById('stat-min').innerText = Math.min(...values).toFixed(1);
+            }
+
+            // 销毁旧图表
+            if (chartInstance) chartInstance.destroy();
+
+            // 创建新图表
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '体重 (kg)',
+                        data: values,
+                        borderColor: '#2563eb', // blue-600
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#2563eb',
+                        pointRadius: 4,
+                        fill: true,
+                        tension: 0.4 // 平滑曲线
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: {
+                                maxTicksLimit: 7,
+                                color: '#9ca3af'
+                            }
+                        },
+                        y: {
+                            grid: { borderDash: [5, 5], color: '#f3f4f6' },
+                            ticks: { color: '#9ca3af' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ================= 初始化 =================
+        const init = () => {
+            fetchLogs();
+            // 绑定 Tab 切换点击事件已在 HTML onclick 中处理
+            // 绑定 Toast 事件已在 HTML onclick 中处理
+        };
+
+        init();
+
+    </script>
+</body>
+</html>
