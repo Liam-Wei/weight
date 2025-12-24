@@ -272,6 +272,25 @@
                         <button onclick="setWeightHistoryFilter('night')" class="px-3 py-2 rounded-xl text-sm font-semibold bg-gray-100 text-gray-700">睡前</button>
                         <button onclick="setWeightHistoryFilter('all')" class="px-3 py-2 rounded-xl text-sm font-semibold bg-gray-100 text-gray-700">全部</button>
                     </div>
+                    <div class="space-y-2">
+                        <div class="grid grid-cols-4 gap-2">
+                            <button class="px-3 py-2 rounded-xl text-xs font-semibold bg-gray-100 text-gray-700 active:scale-95 transition-transform" onclick="copyWeightHistoryToClipboard('all')">复制全部</button>
+                            <button class="px-3 py-2 rounded-xl text-xs font-semibold bg-gray-100 text-gray-700 active:scale-95 transition-transform" onclick="copyWeightHistoryToClipboard('7d')">近7天</button>
+                            <button class="px-3 py-2 rounded-xl text-xs font-semibold bg-gray-100 text-gray-700 active:scale-95 transition-transform" onclick="copyWeightHistoryToClipboard('1m')">近1月</button>
+                            <button class="px-3 py-2 rounded-xl text-xs font-semibold bg-gray-100 text-gray-700 active:scale-95 transition-transform" onclick="copyWeightHistoryToClipboard('2m')">近2月</button>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <select id="weight-history-copy-range" class="flex-1 px-3 py-2 rounded-xl text-xs font-semibold bg-gray-100 text-gray-700">
+                                <option value="3m">近3个月</option>
+                                <option value="4m">近4个月</option>
+                                <option value="5m">近5个月</option>
+                                <option value="6m">近半年</option>
+                                <option value="1y">近一年</option>
+                                <option value="all">全部历史</option>
+                            </select>
+                            <button class="px-3 py-2 rounded-xl text-xs font-semibold bg-gray-900 text-white active:scale-95 transition-transform" onclick="copyWeightHistoryToClipboard(document.getElementById('weight-history-copy-range')?.value || 'all')">复制</button>
+                        </div>
+                    </div>
                 </div>
                 <div id="weight-history-list" class="px-6 py-4 overflow-y-auto text-sm text-gray-700"></div>
                 <div class="px-6 py-4 border-t border-gray-100">
@@ -354,7 +373,8 @@
             calcHistory: document.getElementById('calc-history'),
             weightHistoryModal: document.getElementById('weight-history-modal'),
             weightHistoryList: document.getElementById('weight-history-list'),
-            weightHistoryTabs: document.getElementById('weight-history-tabs')
+            weightHistoryTabs: document.getElementById('weight-history-tabs'),
+            weightHistoryCopyRange: document.getElementById('weight-history-copy-range')
         };
 
         // ================= 工具函数 =================
@@ -372,9 +392,9 @@
 
         window.openWeightHistoryModal = () => {
             if (!els.weightHistoryModal || !els.weightHistoryList) return;
-            // 默认展示早晨体重
-            appData.weightHistoryFilter = 'morning';
-            setWeightHistoryFilter('morning');
+            // 默认展示全部体重
+            appData.weightHistoryFilter = 'all';
+            setWeightHistoryFilter('all');
             els.weightHistoryModal.classList.remove('hidden');
         };
 
@@ -421,6 +441,99 @@
                 wrap.appendChild(row);
             });
         }
+
+        const WEIGHT_HISTORY_RANGE_LABEL = {
+            all: '全部历史',
+            '7d': '近7天',
+            '1m': '近1个月',
+            '2m': '近2个月',
+            '3m': '近3个月',
+            '4m': '近4个月',
+            '5m': '近5个月',
+            '6m': '近半年',
+            '1y': '近一年'
+        };
+
+        function getRangeCutoffMs(rangeKey) {
+            if (!rangeKey || rangeKey === 'all') return null;
+            const now = new Date();
+            const d = new Date(now);
+            if (rangeKey === '7d') d.setDate(d.getDate() - 7);
+            else if (rangeKey === '1m') d.setMonth(d.getMonth() - 1);
+            else if (rangeKey === '2m') d.setMonth(d.getMonth() - 2);
+            else if (rangeKey === '3m') d.setMonth(d.getMonth() - 3);
+            else if (rangeKey === '4m') d.setMonth(d.getMonth() - 4);
+            else if (rangeKey === '5m') d.setMonth(d.getMonth() - 5);
+            else if (rangeKey === '6m') d.setMonth(d.getMonth() - 6);
+            else if (rangeKey === '1y') d.setFullYear(d.getFullYear() - 1);
+            const ms = d.getTime();
+            return Number.isFinite(ms) ? ms : null;
+        }
+
+        function pad2(n) {
+            return String(n).padStart(2, '0');
+        }
+
+        function buildWeightHistoryTsv(logs, meta) {
+            const { filterLabel, rangeLabel } = meta || {};
+            const lines = [];
+            lines.push(`范围: ${rangeLabel || ''} | 类型: ${filterLabel || ''} | 单位: kg`);
+            lines.push('date\tperiod\tweight_kg');
+            logs.forEach(item => {
+                const ymd = getYmd(item.date || item.timestamp);
+                const periodLabel = WEIGHT_PERIOD_LABEL[normalizePeriod(item)] || '';
+                const weight = formatWeight(item.value);
+                lines.push(`${ymd}\t${periodLabel}\t${weight}`);
+            });
+            return lines.join('\n');
+        }
+
+        async function copyTextToClipboard(text) {
+            if (navigator?.clipboard?.writeText) {
+                await navigator.clipboard.writeText(text);
+                return;
+            }
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.left = '-9999px';
+            ta.style.top = '0';
+            document.body.appendChild(ta);
+            ta.focus();
+            ta.select();
+            const ok = document.execCommand('copy');
+            document.body.removeChild(ta);
+            if (!ok) throw new Error('copy_failed');
+        }
+
+        window.copyWeightHistoryToClipboard = async (rangeKey = 'all') => {
+            try {
+                const filter = appData.weightHistoryFilter || 'all';
+                const filterLabel = filter === 'morning' ? '早晨' : (filter === 'night' ? '睡前' : '全部');
+                const rangeLabel = WEIGHT_HISTORY_RANGE_LABEL[rangeKey] || '';
+
+                const cutoffMs = getRangeCutoffMs(rangeKey);
+                const weights = getWeightLogs(filter)
+                    .filter(l => {
+                        if (!cutoffMs) return true;
+                        return getLogDateMs(l) >= cutoffMs;
+                    })
+                    .sort((a, b) => getLogDateMs(a) - getLogDateMs(b));
+
+                if (!weights.length) {
+                    showToast('该范围暂无体重记录');
+                    return;
+                }
+
+                const text = buildWeightHistoryTsv(weights, { filterLabel, rangeLabel });
+
+                await copyTextToClipboard(text);
+                showToast(`已复制 ${weights.length} 条记录`);
+            } catch (e) {
+                console.error(e);
+                showToast('复制失败，请重试');
+            }
+        };
 
         // 格式化日期
         const toJsDate = (value) => {
