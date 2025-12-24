@@ -94,8 +94,13 @@
                     </div>
                 </div>
 
+                <div class="flex bg-gray-100 rounded-lg p-1 mb-4">
+                    <button onclick="setWeightPeriod('morning')" id="btn-period-morning" class="px-3 py-1 rounded-md text-sm font-medium transition-all bg-white shadow text-emerald-600">早晨空腹</button>
+                    <button onclick="setWeightPeriod('night')" id="btn-period-night" class="px-3 py-1 rounded-md text-sm font-medium text-gray-500 transition-all">睡前</button>
+                </div>
+
                 <div class="flex items-center border-b-2 border-emerald-500 pb-2 mb-5">
-                    <input type="number" id="input-weight" step="0.1" placeholder="0.0" class="w-full text-4xl font-bold bg-transparent outline-none text-gray-900">
+                    <input type="number" id="input-weight" step="0.01" placeholder="0.00" class="w-full text-4xl font-bold bg-transparent outline-none text-gray-900">
                 </div>
 
                 <button onclick="saveWeight()" id="btn-save-weight" class="w-full bg-emerald-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg active:scale-95 transition-transform flex justify-center items-center hover:bg-emerald-700">
@@ -115,8 +120,8 @@
             <h2 class="text-2xl font-bold mb-6">趋势分析</h2>
 
             <div class="flex space-x-2 mb-6 overflow-x-auto no-scrollbar">
-                <button data-range="7" onclick="filterChart(7)" class="filter-btn active px-4 py-2 bg-emerald-600 text-white rounded-full text-sm font-medium whitespace-nowrap">最近7天</button>
-                <button data-range="30" onclick="filterChart(30)" class="filter-btn px-4 py-2 bg-emerald-50 text-emerald-700 rounded-full text-sm font-medium whitespace-nowrap">最近30天</button>
+                <button data-range="7" onclick="filterChart(7)" class="filter-btn px-4 py-2 bg-emerald-50 text-emerald-700 rounded-full text-sm font-medium whitespace-nowrap">最近7天</button>
+                <button data-range="30" onclick="filterChart(30)" class="filter-btn active px-4 py-2 bg-emerald-600 text-white rounded-full text-sm font-medium whitespace-nowrap">最近30天</button>
                 <button data-range="60" onclick="filterChart(60)" class="filter-btn px-4 py-2 bg-emerald-50 text-emerald-700 rounded-full text-sm font-medium whitespace-nowrap">最近60天</button>
                 <button data-range="999" onclick="filterChart(999)" class="filter-btn px-4 py-2 bg-emerald-50 text-emerald-700 rounded-full text-sm font-medium whitespace-nowrap">全部历史</button>
             </div>
@@ -252,14 +257,21 @@
         <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeWeightHistoryModal()"></div>
         <div class="absolute inset-x-0 bottom-0 sm:inset-0 sm:flex sm:items-center sm:justify-center">
             <div class="bg-white w-full sm:max-w-lg sm:rounded-3xl rounded-t-3xl shadow-xl border border-gray-100 max-h-[80vh] flex flex-col">
-                <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-                    <div>
-                        <p class="text-sm text-gray-500">全部历史</p>
-                        <h3 class="text-lg font-bold text-gray-900">每日体重</h3>
+                <div class="px-6 py-4 border-b border-gray-100 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-500">全部历史</p>
+                            <h3 class="text-lg font-bold text-gray-900">每日体重</h3>
+                        </div>
+                        <button class="w-9 h-9 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center" onclick="closeWeightHistoryModal()">
+                            <i class="fas fa-times"></i>
+                        </button>
                     </div>
-                    <button class="w-9 h-9 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center" onclick="closeWeightHistoryModal()">
-                        <i class="fas fa-times"></i>
-                    </button>
+                    <div id="weight-history-tabs" class="flex gap-2">
+                        <button onclick="setWeightHistoryFilter('morning')" class="px-3 py-2 rounded-xl text-sm font-semibold bg-emerald-600 text-white shadow-sm">早晨</button>
+                        <button onclick="setWeightHistoryFilter('night')" class="px-3 py-2 rounded-xl text-sm font-semibold bg-gray-100 text-gray-700">睡前</button>
+                        <button onclick="setWeightHistoryFilter('all')" class="px-3 py-2 rounded-xl text-sm font-semibold bg-gray-100 text-gray-700">全部</button>
+                    </div>
                 </div>
                 <div id="weight-history-list" class="px-6 py-4 overflow-y-auto text-sm text-gray-700"></div>
                 <div class="px-6 py-4 border-t border-gray-100">
@@ -303,9 +315,11 @@
         let appData = {
             logs: [],
             currentUnit: 'kg', // 输入时的单位
+            weightInputPeriod: 'morning', // 早晨/睡前
             userHeight: 172, // 默认身高，会存储在闭包中
             foodUnit: 'g', // g 或 ml
-            foodHeatUnit: 'kj' // kcal 或 kj，默认按 kJ 常见标注
+            foodHeatUnit: 'kj', // kcal 或 kj，默认按 kJ 常见标注
+            weightHistoryFilter: 'morning'
         };
         let chartInstance = null;
 
@@ -331,13 +345,16 @@
             weightChange: document.getElementById('weight-change'),
             weightChangeDesc: document.getElementById('weight-change-desc'),
             weightTrendBadge: document.getElementById('weight-trend-badge'),
+            btnPeriodMorning: document.getElementById('btn-period-morning'),
+            btnPeriodNight: document.getElementById('btn-period-night'),
             foodName: document.getElementById('food-name'),
             foodAmount: document.getElementById('food-amount'),
             foodUnitKcal: document.getElementById('food-unit-kcal'),
             foodTotal: document.getElementById('food-total-kcal'),
             calcHistory: document.getElementById('calc-history'),
             weightHistoryModal: document.getElementById('weight-history-modal'),
-            weightHistoryList: document.getElementById('weight-history-list')
+            weightHistoryList: document.getElementById('weight-history-list'),
+            weightHistoryTabs: document.getElementById('weight-history-tabs')
         };
 
         // ================= 工具函数 =================
@@ -355,8 +372,10 @@
 
         window.openWeightHistoryModal = () => {
             if (!els.weightHistoryModal || !els.weightHistoryList) return;
+            // 默认展示早晨体重
+            appData.weightHistoryFilter = 'morning';
+            setWeightHistoryFilter('morning');
             els.weightHistoryModal.classList.remove('hidden');
-            renderWeightHistoryModal();
         };
 
         window.closeWeightHistoryModal = () => {
@@ -378,8 +397,7 @@
             if (!wrap) return;
             wrap.innerHTML = '';
 
-            const weights = appData.logs
-                .filter(l => l.type === 'weight')
+            const weights = getWeightLogs(appData.weightHistoryFilter)
                 .sort((a, b) => getLogDateMs(b) - getLogDateMs(a));
 
             if (!weights.length) {
@@ -387,25 +405,17 @@
                 return;
             }
 
-            const byDay = new Map();
-            weights.forEach(l => {
-                const ymd = getYmd(l.date || l.timestamp);
-                if (!ymd) return;
-                if (!byDay.has(ymd)) byDay.set(ymd, l);
-            });
-
-            const days = Array.from(byDay.keys()).sort((a, b) => b.localeCompare(a));
-            days.forEach(ymd => {
-                const item = byDay.get(ymd);
+            weights.forEach(item => {
+                const ymd = getYmd(item.date || item.timestamp);
                 const row = document.createElement('div');
                 row.className = 'flex items-center justify-between py-3 border-b border-gray-100';
                 row.innerHTML = `
                     <div>
                         <p class="text-sm font-semibold text-gray-900">${ymd}</p>
-                        <p class="text-xs text-gray-400 mt-1">${formatDate(item.date || item.timestamp)}</p>
+                        <p class="text-xs text-gray-400 mt-1">${formatDate(item.date || item.timestamp)} · ${WEIGHT_PERIOD_LABEL[normalizePeriod(item)] || ''}</p>
                     </div>
                     <div class="text-right">
-                        <p class="text-base font-bold text-gray-900">${Number(item.value).toFixed(1)} kg</p>
+                        <p class="text-base font-bold text-gray-900">${formatWeight(item.value)} kg</p>
                     </div>
                 `;
                 wrap.appendChild(row);
@@ -437,6 +447,25 @@
             return Number.isFinite(ms) ? ms : 0;
         };
 
+        const formatWeight = (val) => {
+            const n = Number(val);
+            return Number.isFinite(n) ? n.toFixed(2) : '--';
+        };
+
+        const WEIGHT_PERIOD_LABEL = {
+            morning: '早晨空腹',
+            night: '睡前'
+        };
+
+        const normalizePeriod = (log) => (log?.period === 'night' ? 'night' : 'morning');
+
+        const getWeightLogs = (filter = 'all') => {
+            const weights = appData.logs.filter(l => l.type === 'weight');
+            if (filter === 'morning') return weights.filter(l => normalizePeriod(l) === 'morning');
+            if (filter === 'night') return weights.filter(l => normalizePeriod(l) === 'night');
+            return weights;
+        };
+
         const formatDate = (value) => {
             const date = toJsDate(value);
             if (!date || !Number.isFinite(date.getTime())) return '--';
@@ -463,7 +492,37 @@
 
             // 如果切换到趋势页，重新渲染图表
             if(viewName === 'trend') {
-                if (typeof window.filterChart === 'function') window.filterChart(7); // 默认显示7天
+                if (typeof window.filterChart === 'function') window.filterChart(30); // 默认显示30天
+            }
+        };
+
+        // 历史筛选标签
+        window.setWeightHistoryFilter = (filter) => {
+            appData.weightHistoryFilter = filter;
+            if (els.weightHistoryTabs) {
+                els.weightHistoryTabs.querySelectorAll('button').forEach(btn => {
+                    const active = btn.getAttribute('onclick')?.includes(`'${filter}'`);
+                    if (active) {
+                        btn.className = "px-3 py-2 rounded-xl text-sm font-semibold bg-emerald-600 text-white shadow-sm";
+                    } else {
+                        btn.className = "px-3 py-2 rounded-xl text-sm font-semibold bg-gray-100 text-gray-700";
+                    }
+                });
+            }
+            renderWeightHistoryModal();
+        };
+
+        // 体重记录时段切换（早晨/睡前）
+        window.setWeightPeriod = (period) => {
+            appData.weightInputPeriod = period === 'night' ? 'night' : 'morning';
+            if (els.btnPeriodMorning && els.btnPeriodNight) {
+                if (appData.weightInputPeriod === 'morning') {
+                    els.btnPeriodMorning.className = "px-3 py-1 rounded-md text-sm font-medium transition-all bg-white shadow text-emerald-600";
+                    els.btnPeriodNight.className = "px-3 py-1 rounded-md text-sm font-medium text-gray-500 transition-all";
+                } else {
+                    els.btnPeriodNight.className = "px-3 py-1 rounded-md text-sm font-medium transition-all bg-white shadow text-emerald-600";
+                    els.btnPeriodMorning.className = "px-3 py-1 rounded-md text-sm font-medium text-gray-500 transition-all";
+                }
             }
         };
 
@@ -511,11 +570,11 @@
             document.getElementById('current-date').innerText = `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日`;
 
             // 过滤出体重记录
-            const weightLogs = appData.logs.filter(log => log.type === 'weight');
+            const weightLogs = getWeightLogs('morning');
 
             if (weightLogs.length > 0) {
                 const latest = weightLogs[0];
-                els.displayWeight.innerText = latest.value.toFixed(1);
+                els.displayWeight.innerText = formatWeight(latest.value);
                 const latestDate = toJsDate(latest.date) || toJsDate(latest.timestamp);
                 if (latestDate && Number.isFinite(latestDate.getTime())) {
                     els.lastRecordTime.innerText = `记录于 ${String(latestDate.getHours()).padStart(2, '0')}:${String(latestDate.getMinutes()).padStart(2, '0')}`;
@@ -528,7 +587,7 @@
                     const prev = weightLogs[1];
                     const diff = latest.value - prev.value;
                     const sign = diff > 0 ? '+' : '';
-                    els.weightChange.innerText = `${sign}${diff.toFixed(1)} kg`;
+                    els.weightChange.innerText = `${sign}${diff.toFixed(2)} kg`;
                     els.weightChangeDesc.innerText = `较上一条 ${formatDate(prev.date || prev.timestamp)}`;
                     if (diff > 0) {
                         els.weightTrendBadge.innerText = '上升';
@@ -550,7 +609,7 @@
                 // 计算 BMI
                 const heightM = appData.userHeight / 100;
                 const bmi = latest.value / (heightM * heightM);
-                els.displayBMI.innerText = bmi.toFixed(1);
+                els.displayBMI.innerText = bmi.toFixed(2);
                 
                 // BMI 状态
                 let status = "正常";
@@ -578,8 +637,8 @@
                                     <i class="fas fa-weight-scale text-emerald-500"></i>
                                 </div>
                                 <div>
-                                    <p class="font-bold text-gray-800">${Number(log.value).toFixed(1)} kg</p>
-                                    <p class="text-xs text-gray-400">${formatDate(log.date || log.timestamp)}</p>
+                                    <p class="font-bold text-gray-800">${formatWeight(log.value)} kg</p>
+                                    <p class="text-xs text-gray-400">${formatDate(log.date || log.timestamp)} · ${WEIGHT_PERIOD_LABEL[normalizePeriod(log)] || ''}</p>
                                 </div>
                             </div>
                             <button class="text-red-500 text-sm px-3 py-2 rounded-lg hover:bg-red-50" onclick="deleteWeightItem('${log.id}')">删除</button>
@@ -607,6 +666,7 @@
 
             // 单位转换：如果是斤，除以2转为KG存入数据库
             const weightKg = appData.currentUnit === 'jin' ? rawVal / 2 : rawVal;
+            const weightFixed = Number(weightKg.toFixed(2));
 
             const now = new Date();
             // 格式化为 YYYY-MM-DD HH:mm
@@ -615,7 +675,8 @@
             const newDoc = {
                 date: dateStr,
                 type: "weight",
-                value: weightKg,
+                value: weightFixed,
+                period: appData.weightInputPeriod,
                 note: "",
                 timestamp: serverTimestamp()
             };
@@ -886,8 +947,7 @@
             const ctx = document.getElementById('weightChart').getContext('2d');
             
             // 过滤数据：只看体重，按时间正序排列
-            let weightData = appData.logs
-                .filter(d => d.type === 'weight')
+            let weightData = getWeightLogs('morning')
                 .sort((a, b) => getLogDateMs(a) - getLogDateMs(b));
 
             // 时间筛选
@@ -918,12 +978,12 @@
                 } else {
                     const first = weightData[0];
                     const last = weightData[weightData.length - 1];
-                    els.trendCurrentWeight.innerText = `${Number(last.value).toFixed(1)} kg`;
+                    els.trendCurrentWeight.innerText = `${formatWeight(last.value)} kg`;
                     els.trendCurrentTime.innerText = formatDate(last.date || last.timestamp);
 
                     const diff = Number(last.value) - Number(first.value);
                     const sign = diff > 0 ? '+' : '';
-                    els.trendChange.innerText = `${sign}${diff.toFixed(1)} kg`;
+                    els.trendChange.innerText = `${sign}${diff.toFixed(2)} kg`;
                     if (diff > 0) {
                         els.trendChangeBadge.innerText = '上升';
                         els.trendChangeBadge.className = 'bg-red-100 text-red-600 text-xs px-2 py-1 rounded-full';
@@ -945,8 +1005,8 @@
 
             // 更新统计
             if(values.length > 0) {
-                document.getElementById('stat-max').innerText = Math.max(...values).toFixed(1);
-                document.getElementById('stat-min').innerText = Math.min(...values).toFixed(1);
+                document.getElementById('stat-max').innerText = Math.max(...values).toFixed(2);
+                document.getElementById('stat-min').innerText = Math.min(...values).toFixed(2);
             } else {
                 document.getElementById('stat-max').innerText = '--';
                 document.getElementById('stat-min').innerText = '--';
