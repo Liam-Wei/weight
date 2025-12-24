@@ -63,7 +63,10 @@
             <div class="bg-white rounded-3xl p-6 shadow-sm shadow-emerald-100/50 mb-6 border border-gray-100">
                 <div class="flex justify-between items-start mb-2">
                     <span class="text-gray-500 font-medium text-sm uppercase tracking-wider">最新体重</span>
-                    <span class="bg-green-100 text-green-600 text-xs px-2 py-1 rounded-full" id="weight-trend-badge">-</span>
+                    <div class="flex items-center gap-2">
+                        <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full" id="weight-period-badge">-</span>
+                        <span class="bg-green-100 text-green-600 text-xs px-2 py-1 rounded-full" id="weight-trend-badge">-</span>
+                    </div>
                 </div>
                 <div class="flex items-baseline gap-2">
                     <span id="display-weight" class="text-5xl font-extrabold text-gray-900">--</span>
@@ -290,6 +293,10 @@
                             </select>
                             <button class="px-3 py-2 rounded-xl text-xs font-semibold bg-gray-900 text-white active:scale-95 transition-transform" onclick="copyWeightHistoryToClipboard(document.getElementById('weight-history-copy-range')?.value || 'all')">复制</button>
                         </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button class="px-3 py-2 rounded-xl text-xs font-semibold bg-emerald-600 text-white active:scale-95 transition-transform" onclick="downloadWeightHistoryFile('csv', document.getElementById('weight-history-copy-range')?.value || 'all')">下载CSV</button>
+                            <button class="px-3 py-2 rounded-xl text-xs font-semibold bg-emerald-600 text-white active:scale-95 transition-transform" onclick="downloadWeightHistoryFile('json', document.getElementById('weight-history-copy-range')?.value || 'all')">下载JSON</button>
+                        </div>
                     </div>
                 </div>
                 <div id="weight-history-list" class="px-6 py-4 overflow-y-auto text-sm text-gray-700"></div>
@@ -300,7 +307,7 @@
         </div>
     </div>
 
-    <div id="toast" class="fixed top-12 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-full shadow-xl opacity-0 transition-opacity duration-300 pointer-events-none z-50 flex items-center gap-2">
+    <div id="toast" class="fixed top-12 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-full shadow-xl opacity-0 transition-opacity duration-300 pointer-events-none z-[100] flex items-center gap-2">
         <i class="fas fa-check-circle text-green-400"></i>
         <span id="toast-msg">保存成功</span>
     </div>
@@ -329,6 +336,7 @@
         const analytics = getAnalytics(app);
         const db = getFirestore(app);
         const COLLECTION_NAME = "diet_logs";
+        const FETCH_LIMIT = 1000;
 
         // 4. 全局状态
         let appData = {
@@ -364,6 +372,7 @@
             weightChange: document.getElementById('weight-change'),
             weightChangeDesc: document.getElementById('weight-change-desc'),
             weightTrendBadge: document.getElementById('weight-trend-badge'),
+            weightPeriodBadge: document.getElementById('weight-period-badge'),
             btnPeriodMorning: document.getElementById('btn-period-morning'),
             btnPeriodNight: document.getElementById('btn-period-night'),
             foodName: document.getElementById('food-name'),
@@ -426,13 +435,13 @@
             }
 
             weights.forEach(item => {
-                const ymd = getYmd(item.date || item.timestamp);
+                const ymd = getYmd(item.date || item.timestamp || item.clientCreatedAtMs);
                 const row = document.createElement('div');
                 row.className = 'flex items-center justify-between py-3 border-b border-gray-100';
                 row.innerHTML = `
                     <div>
                         <p class="text-sm font-semibold text-gray-900">${ymd}</p>
-                        <p class="text-xs text-gray-400 mt-1">${formatDate(item.date || item.timestamp)} · ${WEIGHT_PERIOD_LABEL[normalizePeriod(item)] || ''}</p>
+                        <p class="text-xs text-gray-400 mt-1">${formatDate(item.date || item.timestamp || item.clientCreatedAtMs)} · ${WEIGHT_PERIOD_LABEL[normalizePeriod(item)] || ''}</p>
                     </div>
                     <div class="text-right">
                         <p class="text-base font-bold text-gray-900">${formatWeight(item.value)} kg</p>
@@ -480,13 +489,107 @@
             lines.push(`范围: ${rangeLabel || ''} | 类型: ${filterLabel || ''} | 单位: kg`);
             lines.push('date\tperiod\tweight_kg');
             logs.forEach(item => {
-                const ymd = getYmd(item.date || item.timestamp);
+                const ymd = getYmd(item.date || item.timestamp || item.clientCreatedAtMs);
                 const periodLabel = WEIGHT_PERIOD_LABEL[normalizePeriod(item)] || '';
                 const weight = formatWeight(item.value);
                 lines.push(`${ymd}\t${periodLabel}\t${weight}`);
             });
             return lines.join('\n');
         }
+
+        function escapeCsvCell(val) {
+            const s = String(val ?? '');
+            if (/[",\n\r]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
+            return s;
+        }
+
+        function buildWeightHistoryCsv(logs, meta) {
+            const { filterLabel, rangeLabel } = meta || {};
+            const lines = [];
+            lines.push(escapeCsvCell(`范围: ${rangeLabel || ''} | 类型: ${filterLabel || ''} | 单位: kg`));
+            lines.push('date,period,weight_kg');
+            logs.forEach(item => {
+                const ymd = getYmd(item.date || item.timestamp || item.clientCreatedAtMs);
+                const periodLabel = WEIGHT_PERIOD_LABEL[normalizePeriod(item)] || '';
+                const weight = formatWeight(item.value);
+                lines.push([ymd, periodLabel, weight].map(escapeCsvCell).join(','));
+            });
+            return lines.join('\n');
+        }
+
+        function buildWeightHistoryJson(logs, meta) {
+            const { filterLabel, rangeLabel } = meta || {};
+            const items = logs.map(item => {
+                const d = toJsDate(item.timestamp) || toJsDate(item.date) || toJsDate(item.clientCreatedAtMs);
+                const ms = d?.getTime();
+                return {
+                    date: getYmd(item.date || item.timestamp || item.clientCreatedAtMs),
+                    period: normalizePeriod(item),
+                    periodLabel: WEIGHT_PERIOD_LABEL[normalizePeriod(item)] || '',
+                    weightKg: Number(item.value),
+                    timeMs: Number.isFinite(ms) ? ms : null
+                };
+            });
+            return JSON.stringify({
+                meta: {
+                    rangeLabel: rangeLabel || '',
+                    filterLabel: filterLabel || '',
+                    unit: 'kg'
+                },
+                items
+            }, null, 2);
+        }
+
+        function downloadTextFile(filename, mimeType, content) {
+            const blob = new Blob([content], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        window.downloadWeightHistoryFile = (format = 'csv', rangeKey = 'all') => {
+            try {
+                const filter = appData.weightHistoryFilter || 'all';
+                const filterLabel = filter === 'morning' ? '早晨' : (filter === 'night' ? '睡前' : '全部');
+                const rangeLabel = WEIGHT_HISTORY_RANGE_LABEL[rangeKey] || '';
+
+                const cutoffMs = getRangeCutoffMs(rangeKey);
+                const weights = getWeightLogs(filter)
+                    .filter(l => {
+                        if (!cutoffMs) return true;
+                        return getLogDateMs(l) >= cutoffMs;
+                    })
+                    .sort((a, b) => getLogDateMs(a) - getLogDateMs(b));
+
+                if (!weights.length) {
+                    showToast('该范围暂无体重记录');
+                    return;
+                }
+
+                const ymdNow = getYmd(new Date()) || 'history';
+                const safeFilter = filter === 'morning' ? 'morning' : (filter === 'night' ? 'night' : 'all');
+                const safeRange = rangeKey || 'all';
+
+                if (format === 'json') {
+                    const json = buildWeightHistoryJson(weights, { filterLabel, rangeLabel });
+                    downloadTextFile(`weight_history_${safeFilter}_${safeRange}_${ymdNow}.json`, 'application/json;charset=utf-8', json);
+                    showToast(`已下载 ${weights.length} 条记录`);
+                    return;
+                }
+
+                const csv = buildWeightHistoryCsv(weights, { filterLabel, rangeLabel });
+                downloadTextFile(`weight_history_${safeFilter}_${safeRange}_${ymdNow}.csv`, 'text/csv;charset=utf-8', csv);
+                showToast(`已下载 ${weights.length} 条记录`);
+            } catch (e) {
+                console.error(e);
+                showToast('下载失败，请重试');
+            }
+        };
 
         async function copyTextToClipboard(text) {
             if (navigator?.clipboard?.writeText) {
@@ -555,7 +658,7 @@
         };
 
         const getLogDateMs = (log) => {
-            const d = toJsDate(log?.date) || toJsDate(log?.timestamp);
+            const d = toJsDate(log?.timestamp) || toJsDate(log?.date) || toJsDate(log?.clientCreatedAtMs);
             const ms = d?.getTime();
             return Number.isFinite(ms) ? ms : 0;
         };
@@ -659,7 +762,13 @@
         // 1. 获取数据 (读取)
         async function fetchLogs() {
             try {
-                const querySnapshot = await getDocs(collection(db, COLLECTION_NAME));
+                const colRef = collection(db, COLLECTION_NAME);
+                let querySnapshot;
+                try {
+                    querySnapshot = await getDocs(query(colRef, orderBy('timestamp', 'desc'), limit(FETCH_LIMIT)));
+                } catch (e) {
+                    querySnapshot = await getDocs(colRef);
+                }
                 
                 appData.logs = [];
                 querySnapshot.forEach((doc) => {
@@ -683,25 +792,50 @@
             document.getElementById('current-date').innerText = `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日`;
 
             // 过滤出体重记录
-            const weightLogs = getWeightLogs('morning');
+            const weightLogs = getWeightLogs('all');
+            const latestPeriod = weightLogs.length ? normalizePeriod(weightLogs[0]) : 'morning';
+            const weightLogsInLatestPeriod = getWeightLogs(latestPeriod);
 
             if (weightLogs.length > 0) {
                 const latest = weightLogs[0];
                 els.displayWeight.innerText = formatWeight(latest.value);
                 const latestDate = toJsDate(latest.date) || toJsDate(latest.timestamp);
                 if (latestDate && Number.isFinite(latestDate.getTime())) {
-                    els.lastRecordTime.innerText = `记录于 ${String(latestDate.getHours()).padStart(2, '0')}:${String(latestDate.getMinutes()).padStart(2, '0')}`;
+                    const periodLabel = WEIGHT_PERIOD_LABEL[latestPeriod] || '';
+                    els.lastRecordTime.innerText = `${periodLabel ? periodLabel + ' · ' : ''}记录于 ${String(latestDate.getHours()).padStart(2, '0')}:${String(latestDate.getMinutes()).padStart(2, '0')}`;
                 } else {
                     els.lastRecordTime.innerText = `记录于 --:--`;
                 }
+
+                if (els.weightPeriodBadge) {
+                    els.weightPeriodBadge.innerText = WEIGHT_PERIOD_LABEL[latestPeriod] || '-';
+                    els.weightPeriodBadge.className = latestPeriod === 'night'
+                        ? 'bg-indigo-100 text-indigo-700 text-xs px-2 py-1 rounded-full'
+                        : 'bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full';
+                }
                 
                 // 体重变化（与上一条对比）
-                if (weightLogs.length > 1) {
-                    const prev = weightLogs[1];
+                if (weightLogsInLatestPeriod.length > 1) {
+                    const prev = weightLogsInLatestPeriod[1];
                     const diff = latest.value - prev.value;
                     const sign = diff > 0 ? '+' : '';
                     els.weightChange.innerText = `${sign}${diff.toFixed(2)} kg`;
-                    els.weightChangeDesc.innerText = `较上一条 ${formatDate(prev.date || prev.timestamp)}`;
+
+                    const cutoffMs = now.getTime() - 7 * 24 * 60 * 60 * 1000;
+                    const logs7d = weightLogsInLatestPeriod
+                        .filter(l => getLogDateMs(l) >= cutoffMs)
+                        .sort((a, b) => getLogDateMs(a) - getLogDateMs(b));
+
+                    let change7dText = '近7天 --';
+                    if (logs7d.length >= 2) {
+                        const first7d = logs7d[0];
+                        const last7d = logs7d[logs7d.length - 1];
+                        const diff7d = Number(last7d.value) - Number(first7d.value);
+                        const sign7d = diff7d > 0 ? '+' : '';
+                        change7dText = `近7天 ${sign7d}${diff7d.toFixed(2)}kg`;
+                    }
+
+                    els.weightChangeDesc.innerText = `较上一条 ${formatDate(prev.date || prev.timestamp)} · ${change7dText}`;
                     if (diff > 0) {
                         els.weightTrendBadge.innerText = '上升';
                         els.weightTrendBadge.className = 'bg-red-100 text-red-600 text-xs px-2 py-1 rounded-full';
@@ -754,7 +888,7 @@
                                     <p class="text-xs text-gray-400">${formatDate(log.date || log.timestamp)} · ${WEIGHT_PERIOD_LABEL[normalizePeriod(log)] || ''}</p>
                                 </div>
                             </div>
-                            <button class="text-red-500 text-sm px-3 py-2 rounded-lg hover:bg-red-50" onclick="deleteWeightItem('${log.id}')">删除</button>
+                            <button class="text-red-500 text-sm px-3 py-2 rounded-lg hover:bg-red-50" onclick="deleteWeightItem('${log.id}', this)">删除</button>
                         </div>
                     `;
                     els.recentList.appendChild(li);
@@ -766,7 +900,7 @@
         window.saveWeight = async () => {
             const rawVal = parseFloat(els.inputWeight.value);
 
-            if (!rawVal) {
+            if (!Number.isFinite(rawVal)) {
                 showToast("请输入体重数值");
                 return;
             }
@@ -781,9 +915,21 @@
             const weightKg = appData.currentUnit === 'jin' ? rawVal / 2 : rawVal;
             const weightFixed = Number(weightKg.toFixed(2));
 
+            if (!Number.isFinite(weightFixed) || weightFixed <= 0) {
+                showToast("请输入正确体重");
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                return;
+            }
+
             const now = new Date();
             // 格式化为 YYYY-MM-DD HH:mm
             const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+            const ymdNow = getYmd(now);
+            const existing = appData.logs
+                .filter(l => l.type === 'weight')
+                .find(l => normalizePeriod(l) === appData.weightInputPeriod && getYmd(l.date || l.timestamp || l.clientCreatedAtMs) === ymdNow);
 
             const newDoc = {
                 date: dateStr,
@@ -791,12 +937,20 @@
                 value: weightFixed,
                 period: appData.weightInputPeriod,
                 note: "",
-                timestamp: serverTimestamp()
+                timestamp: serverTimestamp(),
+                clientCreatedAtMs: now.getTime()
             };
 
             try {
+                if (existing?.id) {
+                    try {
+                        await deleteDoc(doc(db, COLLECTION_NAME, existing.id));
+                    } catch (e) {
+                        console.error(e);
+                    }
+                }
                 await addDoc(collection(db, COLLECTION_NAME), newDoc);
-                showToast("体重记录成功");
+                showToast(existing?.id ? "已覆盖当日记录" : "体重记录成功");
                 
                 // 清空输入
                 els.inputWeight.value = "";
@@ -832,7 +986,8 @@
                 type: "food",
                 value: kcal, // 存热量
                 note: `摄入 ${kcal} Kcal (跑步约 ${runMins} 分钟 / 哑铃约 ${dumbbellMins} 分钟)`,
-                timestamp: serverTimestamp()
+                timestamp: serverTimestamp(),
+                clientCreatedAtMs: now.getTime()
             };
 
             try {
@@ -957,7 +1112,8 @@
                 run: result.runInt,
                 rope: result.ropeInt,
                 dumbbell: result.dumbbellInt,
-                timestamp: serverTimestamp()
+                timestamp: serverTimestamp(),
+                clientCreatedAtMs: now.getTime()
             };
             try {
                 await addDoc(collection(db, COLLECTION_NAME), newDoc);
@@ -988,35 +1144,68 @@
                         <p class="text-xs text-gray-500 mt-1">${subtitle}</p>
                         <p class="text-[11px] text-gray-400 mt-1">${formatDate(item.date || item.timestamp)}</p>
                     </div>
-                    <button class="text-red-500 text-sm px-3 py-2 rounded-lg hover:bg-red-50" onclick="deleteHistoryItem('${item.id}')">删除</button>
+                    <button class="text-red-500 text-sm px-3 py-2 rounded-lg hover:bg-red-50" onclick="deleteHistoryItem('${item.id}', this)">删除</button>
                 `;
                 wrap.appendChild(row);
             });
         }
 
         // 5.4 删除单条历史
-        window.deleteHistoryItem = async (id) => {
+        const deletingState = {
+            weight: new Set(),
+            foodCalc: new Set()
+        };
+
+        window.deleteHistoryItem = async (id, btnEl) => {
+            let originalText;
             try {
+                if (deletingState.foodCalc.has(id)) return;
+                deletingState.foodCalc.add(id);
+                originalText = btnEl?.innerHTML;
+                if (btnEl) {
+                    btnEl.disabled = true;
+                    btnEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                }
                 await deleteDoc(doc(db, COLLECTION_NAME, id));
                 showToast("已删除");
                 await fetchLogs();
             } catch (e) {
                 console.error(e);
                 showToast("删除失败");
+            } finally {
+                deletingState.foodCalc.delete(id);
+                if (btnEl) {
+                    btnEl.disabled = false;
+                    if (typeof originalText === 'string') btnEl.innerHTML = originalText;
+                }
             }
         };
 
         // 删除单条体重记录
-        window.deleteWeightItem = async (id) => {
+        window.deleteWeightItem = async (id, btnEl) => {
+            let originalText;
             try {
+                if (deletingState.weight.has(id)) return;
                 const ok = confirm('确定删除这条体重记录吗？');
                 if (!ok) return;
+                deletingState.weight.add(id);
+                originalText = btnEl?.innerHTML;
+                if (btnEl) {
+                    btnEl.disabled = true;
+                    btnEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                }
                 await deleteDoc(doc(db, COLLECTION_NAME, id));
                 showToast("已删除");
                 await fetchLogs();
             } catch (e) {
                 console.error(e);
                 showToast("删除失败");
+            } finally {
+                deletingState.weight.delete(id);
+                if (btnEl) {
+                    btnEl.disabled = false;
+                    if (typeof originalText === 'string') btnEl.innerHTML = originalText;
+                }
             }
         };
 
