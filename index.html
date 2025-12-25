@@ -94,12 +94,12 @@
                                 <div id="bmi-tick-27" class="absolute w-[2px] h-full bg-white/60" style="left: 67.5%;"></div>
                             </div>
                         </div>
-                        <div class="relative h-5 text-[10px] text-gray-500 mt-1">
-                            <!-- 标签按实际区间中点定位 -->
-                            <span class="absolute left-[23.125%] -translate-x-1/2">偏瘦</span>
-                            <span class="absolute left-[53.125%] -translate-x-1/2">正常</span>
-                            <span class="absolute left-[63.75%] -translate-x-1/2">过重</span>
-                            <span class="absolute left-[83.75%] -translate-x-1/2">肥胖</span>
+                        <div class="grid grid-cols-4 text-[10px] text-gray-500 mt-2 leading-4 text-center gap-1">
+                            <!-- 单行等分，避免小屏重叠 -->
+                            <span class="whitespace-nowrap">偏瘦</span>
+                            <span class="whitespace-nowrap">正常</span>
+                            <span class="whitespace-nowrap">过重</span>
+                            <span class="whitespace-nowrap">肥胖</span>
                         </div>
                     </div>
                 </div>
