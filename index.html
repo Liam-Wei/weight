@@ -94,11 +94,12 @@
                                 <div id="bmi-tick-27" class="absolute w-[2px] h-full bg-white/60" style="left: 67.5%;"></div>
                             </div>
                         </div>
-                        <div class="flex justify-between text-[10px] text-gray-500 mt-1">
-                            <span>偏瘦</span>
-                            <span>正常</span>
-                            <span>过重</span>
-                            <span>肥胖</span>
+                        <div class="relative h-5 text-[10px] text-gray-500 mt-1">
+                            <!-- 标签按实际区间中点定位 -->
+                            <span class="absolute left-[23.125%] -translate-x-1/2">偏瘦</span>
+                            <span class="absolute left-[53.125%] -translate-x-1/2">正常</span>
+                            <span class="absolute left-[63.75%] -translate-x-1/2">过重</span>
+                            <span class="absolute left-[83.75%] -translate-x-1/2">肥胖</span>
                         </div>
                     </div>
                 </div>
@@ -425,6 +426,8 @@
             lastRecordTime: document.getElementById('last-record-time'),
             displayBMI: document.getElementById('display-bmi'),
             bmiStatus: document.getElementById('bmi-status'),
+            bmiNext: document.getElementById('bmi-next'),
+            bmiProgressIndicator: document.getElementById('bmi-progress-indicator'),
             recentList: document.getElementById('recent-list'),
             inputWeight: document.getElementById('input-weight'),
             calcInput: document.getElementById('calc-input'),
