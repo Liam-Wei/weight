@@ -523,6 +523,8 @@
 
         // 5. DOM 元素引用
         const els = {
+            toast: document.getElementById('toast'),
+            toastMsg: document.getElementById('toast-msg'),
             // 体重输入
             inputWeight: document.getElementById("input-weight"),
             displayWeight: document.getElementById("display-weight"),
@@ -597,10 +599,12 @@
 
         // 显示 Toast 提示
         window.showToast = (msg) => {
+            if (!els.toast || !els.toastMsg) return;
             els.toastMsg.innerText = msg;
             els.toast.classList.remove('opacity-0');
             els.toast.classList.add('opacity-100');
             setTimeout(() => {
+                if (!els.toast) return;
                 els.toast.classList.remove('opacity-100');
                 els.toast.classList.add('opacity-0');
             }, 2000);
