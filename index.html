@@ -216,7 +216,6 @@
                         <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full" id="trend-change-badge">-</span>
                     </div>
                     <h3 id="trend-change" class="text-2xl font-bold text-gray-900 mt-1">--</h3>
-                    <p id="trend-change-desc" class="text-xs text-gray-400 mt-1">--</p>
                 </div>
             </div>
 
@@ -766,7 +765,7 @@
                 els.dailyEditSave && (els.dailyEditSave.disabled = true);
                 els.dailyEditSave && (els.dailyEditSave.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 保存中...');
                 await Promise.all(updates);
-                showToast('已保存该日数据');
+                showToast('保存成功');
                 closeDailyEditModal();
                 await fetchLogs();
             } catch (e) {
@@ -1353,6 +1352,7 @@
 
             // 如果切换到趋势页，重新渲染图表
             if(viewName === 'trend') {
+                if (typeof syncTrendLabels === 'function') syncTrendLabels();
                 if (typeof window.filterChart === 'function') window.filterChart(30); // 默认显示30天
             }
         };
@@ -1940,6 +1940,22 @@
         };
 
         // 6. 图表逻辑
+        function syncTrendLabels() {
+            if (appData.trendMode === 'weight') {
+                if (els.trendModeDesc) els.trendModeDesc.innerText = '体重曲线 · 仅早晨记录';
+                if (els.trendCardLabel1) els.trendCardLabel1.innerText = '当前体重';
+                if (els.trendCardLabel2) els.trendCardLabel2.innerText = '区间变化';
+                if (els.statMaxLabel) els.statMaxLabel.innerText = '最高体重';
+                if (els.statMinLabel) els.statMinLabel.innerText = '最低体重';
+            } else {
+                if (els.trendModeDesc) els.trendModeDesc.innerText = '代谢曲线 · 昨晚减次晨，单位斤';
+                if (els.trendCardLabel1) els.trendCardLabel1.innerText = '当前代谢';
+                if (els.trendCardLabel2) els.trendCardLabel2.innerText = '区间代谢变化';
+                if (els.statMaxLabel) els.statMaxLabel.innerText = '最高代谢';
+                if (els.statMinLabel) els.statMinLabel.innerText = '最低代谢';
+            }
+        }
+
         window.setTrendMode = (mode) => {
             appData.trendMode = mode === 'metabolic' ? 'metabolic' : 'weight';
             if (els.trendBtnWeight && els.trendBtnMetabolic) {
@@ -1956,25 +1972,7 @@
                 }
             }
 
-            if (els.trendModeDesc && els.trendCardLabel1 && els.trendCardLabel2) {
-                if (appData.trendMode === 'weight') {
-                    els.trendModeDesc.innerText = '体重曲线 · 仅早晨记录';
-                    els.trendCardLabel1.innerText = '当前体重';
-                    els.trendCardLabel2.innerText = '区间变化';
-                    if (els.statMaxLabel && els.statMinLabel) {
-                        els.statMaxLabel.innerText = '最高体重';
-                        els.statMinLabel.innerText = '最低体重';
-                    }
-                } else {
-                    els.trendModeDesc.innerText = '代谢曲线 · 昨晚减次晨，单位斤';
-                    els.trendCardLabel1.innerText = '最新代谢量';
-                    els.trendCardLabel2.innerText = '区间变化';
-                    if (els.statMaxLabel && els.statMinLabel) {
-                        els.statMaxLabel.innerText = '最高代谢量';
-                        els.statMinLabel.innerText = '最低代谢量';
-                    }
-                }
-            }
+            syncTrendLabels();
 
             // 重新渲染当前区间
             if (typeof window.filterChart === 'function') window.filterChart(appData.trendRange || 30);
@@ -2070,13 +2068,13 @@
             }
 
             // 更新趋势区间卡片
-            if (els.trendCurrentWeight && els.trendCurrentTime && els.trendChange && els.trendChangeDesc && els.trendChangeBadge) {
+            if (els.trendCurrentWeight && els.trendCurrentTime && els.trendChange && els.trendChangeBadge) {
                 const rangeText = days === 999 ? '全部历史' : `最近${days}天`;
                 if (!dataPoints.length) {
                     els.trendCurrentWeight.innerText = '--';
                     els.trendCurrentTime.innerText = '--';
                     els.trendChange.innerText = '--';
-                    els.trendChangeDesc.innerText = `${rangeText} · 暂无记录`;
+                    if (els.trendChangeDesc) els.trendChangeDesc.innerText = `${rangeText} · 暂无记录`;
                     els.trendChangeBadge.innerText = '-';
                     els.trendChangeBadge.className = 'bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full';
                 } else {
@@ -2103,16 +2101,19 @@
 
                     const firstTime = formatDate(first.raw?.date || first.raw?.timestamp || first.ms);
                     const lastTime = formatDate(last.raw?.date || last.raw?.timestamp || last.ms);
-                    els.trendChangeDesc.innerText = dataPoints.length === 1
-                        ? `${rangeText} · ${firstTime}（仅1条）`
-                        : `${rangeText} · ${firstTime} → ${lastTime}`;
+                    if (els.trendChangeDesc) {
+                        els.trendChangeDesc.innerText = dataPoints.length === 1
+                            ? `${rangeText} · ${firstTime}（仅1条）`
+                            : `${rangeText} · ${firstTime} → ${lastTime}`;
+                    }
                 }
             }
 
             // 更新统计
+            const statUnit = appData.trendMode === 'metabolic' ? '斤' : 'kg';
             if(values.length > 0) {
-                document.getElementById('stat-max').innerText = Math.max(...values).toFixed(2);
-                document.getElementById('stat-min').innerText = Math.min(...values).toFixed(2);
+                document.getElementById('stat-max').innerText = `${Math.max(...values).toFixed(2)} ${statUnit}`;
+                document.getElementById('stat-min').innerText = `${Math.min(...values).toFixed(2)} ${statUnit}`;
             } else {
                 document.getElementById('stat-max').innerText = '--';
                 document.getElementById('stat-min').innerText = '--';
