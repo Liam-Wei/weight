@@ -62,41 +62,52 @@
                     <h1 class="text-3xl font-bold text-gray-900">健康概览</h1>
                     <p class="text-sm text-gray-500" id="current-date">加载中...</p>
                 </div>
-                <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
-                    <i class="fas fa-user"></i>
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white shadow-lg shadow-emerald-200">
+                    <i class="fas fa-heartbeat text-lg"></i>
                 </div>
             </header>
 
-            <div class="bg-white rounded-3xl p-6 shadow-sm shadow-emerald-100/50 mb-6 border border-gray-100">
-                <div class="flex justify-between items-start mb-2">
-                    <span class="text-gray-500 font-medium text-sm uppercase tracking-wider">最新体重</span>
-                    <span class="bg-green-100 text-green-600 text-xs px-2 py-1 rounded-full" id="weight-trend-badge">-</span>
+            <!-- 最新体重卡片 -->
+            <div class="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-3xl p-6 shadow-lg shadow-emerald-200/50 mb-5">
+                <div class="flex justify-between items-start mb-3">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                            <i class="fas fa-weight text-white text-sm"></i>
+                        </div>
+                        <span class="text-emerald-100 font-medium text-sm">最新体重</span>
+                    </div>
+                    <span class="bg-white/20 text-white text-xs px-2.5 py-1 rounded-full backdrop-blur-sm" id="weight-trend-badge">-</span>
                 </div>
                 <div class="flex items-baseline gap-2">
-                    <span id="display-weight" class="text-5xl font-extrabold text-gray-900">--</span>
-                    <span class="text-xl text-gray-500">kg</span>
+                    <span id="display-weight" class="text-5xl font-extrabold text-white">--</span>
+                    <span class="text-xl text-emerald-100">kg</span>
                 </div>
-                <p class="text-xs text-gray-400 mt-2" id="last-record-time">暂无记录</p>
+                <p class="text-xs text-emerald-100/80 mt-2" id="last-record-time">暂无记录</p>
             </div>
 
-            <div class="grid grid-cols-2 gap-4 mb-6">
-                <div class="bg-emerald-50 rounded-3xl p-5 shadow-sm border border-emerald-100">
-                    <p class="text-emerald-700 text-sm mb-1">BMI 指数</p>
+            <!-- BMI 和体重变化 -->
+            <div class="grid grid-cols-2 gap-4 mb-5">
+                <div class="bg-gradient-to-br from-blue-50 to-white rounded-3xl p-5 shadow-sm border border-blue-100">
+                    <div class="flex items-center gap-2 mb-2">
+                        <div class="w-7 h-7 rounded-lg bg-blue-100 flex items-center justify-center">
+                            <i class="fas fa-chart-pie text-blue-600 text-xs"></i>
+                        </div>
+                        <p class="text-blue-700 text-sm font-medium">BMI 指数</p>
+                    </div>
                     <h3 id="display-bmi" class="text-3xl font-bold text-gray-900">--</h3>
-                    <p id="bmi-status" class="text-xs mt-1 text-emerald-700 opacity-80">未知</p>
+                    <p id="bmi-status" class="text-xs mt-1 text-blue-600">未知</p>
                     <p id="bmi-next" class="text-[11px] text-gray-500 mt-1"></p>
                     <div class="mt-3">
-                        <div class="relative h-3">
+                        <div class="relative h-2.5">
                             <div class="absolute inset-0 rounded-full overflow-hidden grid grid-cols-4">
-                                <div class="bg-sky-200"></div>
-                                <div class="bg-emerald-200"></div>
-                                <div class="bg-amber-200"></div>
-                                <div class="bg-rose-200"></div>
+                                <div class="bg-sky-300"></div>
+                                <div class="bg-emerald-300"></div>
+                                <div class="bg-amber-300"></div>
+                                <div class="bg-rose-300"></div>
                             </div>
-                            <div id="bmi-progress-indicator" class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-white border-2 border-emerald-600 shadow ring-2 ring-emerald-100 transition-all duration-300" style="left: 0%;"></div>
+                            <div id="bmi-progress-indicator" class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-white border-2 border-blue-600 shadow-md transition-all duration-300" style="left: 0%;"></div>
                         </div>
                         <div class="grid grid-cols-4 text-[10px] text-gray-500 mt-2 leading-4 text-center gap-1">
-                            <!-- 单行等分，标签与色块对齐 -->
                             <span class="whitespace-nowrap">偏瘦</span>
                             <span class="whitespace-nowrap">正常</span>
                             <span class="whitespace-nowrap">过重</span>
@@ -104,16 +115,66 @@
                         </div>
                     </div>
                 </div>
-                <div class="bg-emerald-50 rounded-3xl p-5 shadow-sm border border-emerald-100 flex flex-col justify-center">
-                    <p class="text-emerald-700 text-sm mb-1">体重变化</p>
+                <div class="bg-gradient-to-br from-purple-50 to-white rounded-3xl p-5 shadow-sm border border-purple-100 flex flex-col">
+                    <div class="flex items-center gap-2 mb-2">
+                        <div class="w-7 h-7 rounded-lg bg-purple-100 flex items-center justify-center">
+                            <i class="fas fa-exchange-alt text-purple-600 text-xs"></i>
+                        </div>
+                        <p class="text-purple-700 text-sm font-medium">体重变化</p>
+                    </div>
                     <h3 id="weight-change" class="text-2xl font-bold text-gray-900">--</h3>
                     <p id="weight-change-desc" class="text-xs text-gray-400 mt-1">等待新记录</p>
-                    <p id="weight-change-extra" class="text-xs text-gray-400 mt-1">--</p>
+                    <p id="weight-change-extra" class="text-xs text-gray-400 mt-auto">--</p>
                 </div>
             </div>
 
-            <div>
-                <h3 class="font-bold text-lg mb-4 text-gray-900">最近记录</h3>
+            <!-- 记录体重卡片 -->
+            <div class="bg-gradient-to-br from-amber-50 to-white rounded-3xl p-5 shadow-sm mb-5 border border-amber-100">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-xl bg-amber-100 flex items-center justify-center">
+                            <i class="fas fa-pen text-amber-600 text-sm"></i>
+                        </div>
+                        <h3 class="font-bold text-gray-900">记录体重</h3>
+                    </div>
+                    <div class="flex bg-gray-100 rounded-xl p-1 shrink-0">
+                        <button onclick="setUnit('kg')" id="btn-unit-kg" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-white shadow text-amber-600">KG</button>
+                        <button onclick="setUnit('jin')" id="btn-unit-jin" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-500 transition-all">斤</button>
+                    </div>
+                </div>
+
+                <div class="flex bg-amber-100/50 rounded-xl p-1 mb-4">
+                    <button onclick="setWeightPeriod('morning')" id="btn-period-morning" class="flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-all bg-white shadow text-amber-600">🌅 早晨空腹</button>
+                    <button onclick="setWeightPeriod('night')" id="btn-period-night" class="flex-1 px-3 py-2 rounded-lg text-sm font-medium text-gray-500 transition-all">🌙 晚间睡前</button>
+                </div>
+
+                <div class="flex items-center bg-white rounded-2xl border-2 border-amber-200 px-4 py-3 mb-4">
+                    <input type="number" id="input-weight" step="0.01" placeholder="0.00" class="w-full text-4xl font-bold bg-transparent outline-none text-gray-900">
+                    <span class="text-xl text-gray-400 ml-2">kg</span>
+                </div>
+
+                <button onclick="saveWeight()" id="btn-save-weight" class="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white py-4 rounded-2xl font-bold text-lg shadow-lg shadow-amber-200 active:scale-95 transition-transform flex justify-center items-center gap-2 hover:shadow-xl">
+                    <i class="fas fa-check"></i>
+                    <span>保存记录</span>
+                </button>
+            </div>
+
+            <!-- 最近记录 -->
+            <div class="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 rounded-3xl p-5 shadow-sm border border-indigo-100">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center shadow-sm">
+                            <i class="fas fa-clock-rotate-left text-white text-sm"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900">最近记录</h3>
+                            <p class="text-[10px] text-gray-500">近7天数据</p>
+                        </div>
+                    </div>
+                    <button onclick="switchView('trend')" class="text-xs text-indigo-500 hover:text-indigo-700 flex items-center gap-1 transition-all">
+                        查看更多 <i class="fas fa-chevron-right text-[10px]"></i>
+                    </button>
+                </div>
                 <ul id="recent-list" class="space-y-3">
                     <li class="text-center text-gray-400 py-4">正在从云端加载...</li>
                 </ul>
@@ -121,188 +182,303 @@
         </section>
 
         <section id="view-record" class="view-section hidden fade-in">
-            <h2 class="text-2xl font-bold mb-6">记录</h2>
+            <h2 class="text-2xl font-bold mb-6">每日备注</h2>
 
-            <div class="bg-white rounded-3xl p-6 shadow-sm mb-6 border border-gray-100">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="font-bold text-lg text-gray-900">记录体重</h3>
-                    <div class="flex bg-gray-100 rounded-lg p-1 shrink-0">
-                        <button onclick="setUnit('kg')" id="btn-unit-kg" class="px-3 py-1 rounded-md text-sm font-medium transition-all bg-white shadow text-emerald-600">KG</button>
-                        <button onclick="setUnit('jin')" id="btn-unit-jin" class="px-3 py-1 rounded-md text-sm font-medium text-gray-500 transition-all">斤</button>
+            <!-- 午餐卡片 -->
+            <div class="bg-gradient-to-br from-emerald-50 to-white rounded-3xl p-5 shadow-sm mb-4 border border-emerald-100">
+                <div class="flex items-center gap-2 mb-3">
+                    <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
+                        <i class="fas fa-sun text-emerald-600 text-sm"></i>
                     </div>
+                    <h3 class="font-bold text-gray-900">午餐</h3>
+                    <span id="status-lunch" class="text-[11px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 ml-auto">未填</span>
                 </div>
-
-                <div class="flex bg-gray-100 rounded-lg p-1 mb-4">
-                    <button onclick="setWeightPeriod('morning')" id="btn-period-morning" class="px-3 py-1 rounded-md text-sm font-medium transition-all bg-white shadow text-emerald-600">早晨空腹</button>
-                    <button onclick="setWeightPeriod('night')" id="btn-period-night" class="px-3 py-1 rounded-md text-sm font-medium text-gray-500 transition-all">晚间睡前</button>
+                <div class="flex gap-2 items-center">
+                    <textarea id="input-lunch-note" rows="2" placeholder="今天午餐吃了什么？" class="flex-1 rounded-2xl border border-emerald-200 bg-white text-gray-900 placeholder-gray-400 px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/30"></textarea>
+                    <button type="button" onclick="saveMealNote('lunch')" class="shrink-0 px-4 py-3 rounded-xl bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700 active:scale-95 transition-all">
+                        <i class="fas fa-check"></i>
+                    </button>
                 </div>
-
-                <div class="flex items-center border-b-2 border-emerald-500 pb-2 mb-5">
-                    <input type="number" id="input-weight" step="0.01" placeholder="0.00" class="w-full text-4xl font-bold bg-transparent outline-none text-gray-900">
-                </div>
-
-                <button onclick="saveWeight()" id="btn-save-weight" class="w-full bg-emerald-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg active:scale-95 transition-transform flex justify-center items-center hover:bg-emerald-700">
-                    <span>保存记录</span>
-                </button>
             </div>
 
-            <div class="bg-white rounded-3xl p-6 shadow-sm mb-6 border border-gray-100 space-y-4">
-                <div class="flex items-center justify-between">
-                    <h3 class="font-bold text-lg text-gray-900">每日饮食 / 运动备注</h3>
-                    <span class="text-xs text-gray-400">午餐 / 晚餐 / 运动</span>
+            <!-- 晚餐卡片 -->
+            <div class="bg-gradient-to-br from-amber-50 to-white rounded-3xl p-5 shadow-sm mb-4 border border-amber-100">
+                <div class="flex items-center gap-2 mb-3">
+                    <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center">
+                        <i class="fas fa-moon text-amber-600 text-sm"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-900">晚餐</h3>
+                    <span id="status-dinner" class="text-[11px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 ml-auto">未填</span>
                 </div>
-                <div class="space-y-3">
-                    <div class="space-y-2">
-                        <div class="flex items-center gap-2">
-                            <span id="status-lunch" class="text-[11px] px-2 py-1 rounded-full bg-gray-100 text-gray-500">未填</span>
-                            <label class="text-sm text-gray-700">午餐吃了什么？</label>
-                        </div>
-                        <div class="flex gap-2 items-center">
-                            <textarea id="input-lunch-note" rows="2" placeholder="例如：鸡胸肉+沙拉" class="flex-1 rounded-2xl border border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-400 px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/30"></textarea>
-                            <button type="button" onclick="saveMealNote('lunch')" class="shrink-0 px-3 py-2 rounded-xl bg-emerald-50 text-emerald-700 text-sm font-semibold border border-emerald-100 hover:bg-emerald-100 active:scale-95">保存午餐</button>
-                        </div>
+                <div class="flex flex-wrap gap-2 mb-3" id="dinner-presets">
+                    <button type="button" onclick="selectDinnerPreset(0)" class="dinner-preset-btn px-3 py-1.5 rounded-full text-xs font-medium bg-white text-amber-700 border border-amber-200 hover:bg-amber-100 active:scale-95 transition-all">豆浆+鸡胸肉</button>
+                    <button type="button" onclick="selectDinnerPreset(1)" class="dinner-preset-btn px-3 py-1.5 rounded-full text-xs font-medium bg-white text-amber-700 border border-amber-200 hover:bg-amber-100 active:scale-95 transition-all">豆浆+鸡胸肉+全麦脆</button>
+                </div>
+                <div class="flex gap-2 items-center">
+                    <textarea id="input-dinner-note" rows="2" placeholder="点击方案快速填充，或手动输入" class="flex-1 rounded-2xl border border-amber-200 bg-white text-gray-900 placeholder-gray-400 px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/30"></textarea>
+                    <button type="button" onclick="saveMealNote('dinner')" class="shrink-0 px-4 py-3 rounded-xl bg-amber-500 text-white text-sm font-semibold hover:bg-amber-600 active:scale-95 transition-all">
+                        <i class="fas fa-check"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 锻炼卡片 -->
+            <div class="bg-white rounded-3xl p-5 shadow-sm mb-4 border border-gray-100">
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                        <i class="fas fa-dumbbell text-blue-600 text-sm"></i>
                     </div>
-                    <div class="space-y-2">
-                        <div class="flex items-center gap-2">
-                            <span id="status-dinner" class="text-[11px] px-2 py-1 rounded-full bg-gray-100 text-gray-500">未填</span>
-                            <label class="text-sm text-gray-700">晚餐吃了什么？</label>
-                        </div>
-                        <div class="flex gap-2 items-center">
-                            <textarea id="input-dinner-note" rows="2" placeholder="例如：清炒时蔬+牛奶" class="flex-1 rounded-2xl border border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-400 px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/30"></textarea>
-                            <button type="button" onclick="saveMealNote('dinner')" class="shrink-0 px-3 py-2 rounded-xl bg-emerald-50 text-emerald-700 text-sm font-semibold border border-emerald-100 hover:bg-emerald-100 active:scale-95">保存晚餐</button>
-                        </div>
+                    <h3 class="font-bold text-gray-900">今日锻炼</h3>
+                    <span id="status-workout" class="text-[11px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 ml-auto">未填</span>
+                </div>
+                
+                <!-- 上午中饭前 - 蓝色 -->
+                <div class="bg-gradient-to-r from-blue-50 to-blue-100/50 rounded-2xl p-4 mb-3">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="text-xs font-semibold text-blue-700">🌅 上午中饭前空腹</span>
                     </div>
-                    <div class="space-y-2">
-                        <div class="flex items-center gap-2">
-                            <span id="status-workout" class="text-[11px] px-2 py-1 rounded-full bg-gray-100 text-gray-500">未填</span>
-                            <label class="text-sm text-gray-700">今天锻炼了什么？</label>
-                        </div>
-                        <div class="flex gap-2 items-center">
-                            <textarea id="input-workout-note" rows="2" placeholder="例如：跑步5km / HIIT 20分钟" class="flex-1 rounded-2xl border border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-400 px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/30"></textarea>
-                            <button type="button" onclick="saveMealNote('workout')" class="shrink-0 px-3 py-2 rounded-xl bg-emerald-50 text-emerald-700 text-sm font-semibold border border-emerald-100 hover:bg-emerald-100 active:scale-95">保存运动</button>
-                        </div>
+                    <div class="flex flex-wrap gap-1.5" id="workout-presets-morning">
+                        <button type="button" onclick="selectWorkoutPreset('morning', 0)" class="workout-preset-btn-morning px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white text-blue-700 border border-blue-200 hover:bg-blue-50 active:scale-95 transition-all shadow-sm">跳绳900</button>
+                        <button type="button" onclick="selectWorkoutPreset('morning', 1)" class="workout-preset-btn-morning px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white text-blue-700 border border-blue-200 hover:bg-blue-50 active:scale-95 transition-all shadow-sm">跳绳1800</button>
+                        <button type="button" onclick="selectWorkoutPreset('morning', 2)" class="workout-preset-btn-morning px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white text-blue-700 border border-blue-200 hover:bg-blue-50 active:scale-95 transition-all shadow-sm">跳绳3000</button>
+                        <button type="button" onclick="selectWorkoutPreset('morning', 3)" class="workout-preset-btn-morning px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white text-blue-700 border border-blue-200 hover:bg-blue-50 active:scale-95 transition-all shadow-sm">无氧30分钟</button>
+                        <button type="button" onclick="selectWorkoutPreset('morning', -1)" class="workout-preset-btn-morning px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white text-gray-500 border border-gray-200 hover:bg-gray-50 active:scale-95 transition-all shadow-sm">未锻炼</button>
                     </div>
+                </div>
+
+                <!-- 下午晚饭前 - 橙色 -->
+                <div class="bg-gradient-to-r from-orange-50 to-orange-100/50 rounded-2xl p-4 mb-3">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="text-xs font-semibold text-orange-700">🌇 下午晚饭前空腹</span>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5" id="workout-presets-evening">
+                        <button type="button" onclick="selectWorkoutPreset('evening', 0)" class="workout-preset-btn-evening px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white text-orange-700 border border-orange-200 hover:bg-orange-50 active:scale-95 transition-all shadow-sm">跳绳900</button>
+                        <button type="button" onclick="selectWorkoutPreset('evening', 1)" class="workout-preset-btn-evening px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white text-orange-700 border border-orange-200 hover:bg-orange-50 active:scale-95 transition-all shadow-sm">跳绳1800</button>
+                        <button type="button" onclick="selectWorkoutPreset('evening', 2)" class="workout-preset-btn-evening px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white text-orange-700 border border-orange-200 hover:bg-orange-50 active:scale-95 transition-all shadow-sm">跳绳3000</button>
+                        <button type="button" onclick="selectWorkoutPreset('evening', 3)" class="workout-preset-btn-evening px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white text-orange-700 border border-orange-200 hover:bg-orange-50 active:scale-95 transition-all shadow-sm">无氧30分钟</button>
+                        <button type="button" onclick="selectWorkoutPreset('evening', -1)" class="workout-preset-btn-evening px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white text-gray-500 border border-gray-200 hover:bg-gray-50 active:scale-95 transition-all shadow-sm">未锻炼</button>
+                    </div>
+                </div>
+
+                <!-- 下午晚饭后 - 紫色 -->
+                <div class="bg-gradient-to-r from-purple-50 to-purple-100/50 rounded-2xl p-4 mb-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="text-xs font-semibold text-purple-700">🌙 下午晚饭后</span>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5" id="workout-presets-night">
+                        <button type="button" onclick="selectWorkoutPreset('night', 0)" class="workout-preset-btn-night px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white text-purple-700 border border-purple-200 hover:bg-purple-50 active:scale-95 transition-all shadow-sm">跳绳900</button>
+                        <button type="button" onclick="selectWorkoutPreset('night', 1)" class="workout-preset-btn-night px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white text-purple-700 border border-purple-200 hover:bg-purple-50 active:scale-95 transition-all shadow-sm">跳绳1800</button>
+                        <button type="button" onclick="selectWorkoutPreset('night', 2)" class="workout-preset-btn-night px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white text-purple-700 border border-purple-200 hover:bg-purple-50 active:scale-95 transition-all shadow-sm">跳绳3000</button>
+                        <button type="button" onclick="selectWorkoutPreset('night', 3)" class="workout-preset-btn-night px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white text-purple-700 border border-purple-200 hover:bg-purple-50 active:scale-95 transition-all shadow-sm">无氧30分钟</button>
+                        <button type="button" onclick="selectWorkoutPreset('night', -1)" class="workout-preset-btn-night px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white text-gray-500 border border-gray-200 hover:bg-gray-50 active:scale-95 transition-all shadow-sm">未锻炼</button>
+                    </div>
+                </div>
+
+                <div class="flex gap-2 items-center">
+                    <textarea id="input-workout-note" rows="2" placeholder="点击上方各时段方案自动生成，或手动输入" class="flex-1 rounded-2xl border border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-400 px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30"></textarea>
+                    <button type="button" onclick="saveMealNote('workout')" class="shrink-0 px-4 py-3 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 active:scale-95 transition-all">
+                        <i class="fas fa-check"></i>
+                    </button>
                 </div>
             </div>
         </section>
 
         <section id="view-trend" class="view-section hidden fade-in">
-            <h2 class="text-2xl font-bold mb-6">趋势分析</h2>
-
-            <div class="flex flex-col gap-3 mb-6">
-                <div class="flex items-center gap-2">
-                    <div class="flex bg-emerald-50 rounded-full p-1 shadow-sm">
-                        <button id="btn-trend-weight" onclick="setTrendMode('weight')" class="trend-mode-btn px-4 py-2 rounded-full text-sm font-semibold bg-emerald-600 text-white shadow">体重趋势</button>
-                        <button id="btn-trend-metabolic" onclick="setTrendMode('metabolic')" class="trend-mode-btn px-4 py-2 rounded-full text-sm font-semibold text-emerald-700">代谢曲线</button>
-                    </div>
+            <header class="mb-6 flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">趋势分析</h1>
+                    <p class="text-sm text-gray-500">追踪你的健康数据</p>
                 </div>
-                <div class="flex flex-wrap gap-2 overflow-x-auto no-scrollbar">
-                    <button data-range="7" onclick="filterChart(7)" class="filter-btn px-4 py-2 bg-emerald-50 text-emerald-700 rounded-full text-sm font-medium whitespace-nowrap">最近7天</button>
-                    <button data-range="30" onclick="filterChart(30)" class="filter-btn active px-4 py-2 bg-emerald-600 text-white rounded-full text-sm font-medium whitespace-nowrap">最近30天</button>
-                    <button data-range="60" onclick="filterChart(60)" class="filter-btn px-4 py-2 bg-emerald-50 text-emerald-700 rounded-full text-sm font-medium whitespace-nowrap">最近60天</button>
-                    <button data-range="999" onclick="filterChart(999)" class="filter-btn px-4 py-2 bg-emerald-50 text-emerald-700 rounded-full text-sm font-medium whitespace-nowrap">全部历史</button>
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-400 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-indigo-200">
+                    <i class="fas fa-chart-line text-lg"></i>
+                </div>
+            </header>
+
+            <!-- 模式切换 -->
+            <div class="bg-white rounded-2xl p-2 shadow-sm border border-gray-100 mb-4">
+                <div class="flex gap-2">
+                    <button id="btn-trend-weight" onclick="setTrendMode('weight')" class="trend-mode-btn flex-1 px-4 py-2.5 rounded-xl text-sm font-semibold bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-sm transition-all">
+                        <i class="fas fa-weight mr-1.5"></i>体重趋势
+                    </button>
+                    <button id="btn-trend-metabolic" onclick="setTrendMode('metabolic')" class="trend-mode-btn flex-1 px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-all">
+                        <i class="fas fa-fire mr-1.5"></i>代谢曲线
+                    </button>
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-4 mb-6">
-                <div class="bg-white rounded-3xl p-5 shadow-sm border border-gray-100">
-                    <p id="trend-card-label-1" class="text-gray-500 text-sm mb-1">当前体重</p>
+            <!-- 时间范围筛选 -->
+            <div class="flex flex-wrap gap-2 mb-5">
+                <button data-range="7" onclick="filterChart(7)" class="filter-btn px-4 py-2 bg-white text-gray-600 rounded-xl text-sm font-medium border border-gray-200 hover:border-indigo-300 hover:text-indigo-600 transition-all">7天</button>
+                <button data-range="30" onclick="filterChart(30)" class="filter-btn active px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-xl text-sm font-medium shadow-sm">30天</button>
+                <button data-range="60" onclick="filterChart(60)" class="filter-btn px-4 py-2 bg-white text-gray-600 rounded-xl text-sm font-medium border border-gray-200 hover:border-indigo-300 hover:text-indigo-600 transition-all">60天</button>
+                <button data-range="999" onclick="filterChart(999)" class="filter-btn px-4 py-2 bg-white text-gray-600 rounded-xl text-sm font-medium border border-gray-200 hover:border-indigo-300 hover:text-indigo-600 transition-all">全部</button>
+            </div>
+
+            <!-- 数据概览卡片 -->
+            <div class="grid grid-cols-2 gap-4 mb-5">
+                <div class="bg-gradient-to-br from-indigo-50 to-white rounded-3xl p-5 shadow-sm border border-indigo-100">
+                    <div class="flex items-center gap-2 mb-2">
+                        <div class="w-7 h-7 rounded-lg bg-indigo-100 flex items-center justify-center">
+                            <i class="fas fa-weight text-indigo-600 text-xs"></i>
+                        </div>
+                        <p id="trend-card-label-1" class="text-indigo-700 text-sm font-medium">当前体重</p>
+                    </div>
                     <h3 id="trend-current-weight" class="text-2xl font-bold text-gray-900">--</h3>
                     <p id="trend-current-time" class="text-xs text-gray-400 mt-1">--</p>
                 </div>
-                <div class="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 flex flex-col justify-center">
-                    <div class="flex items-center justify-between">
-                        <p id="trend-card-label-2" class="text-gray-500 text-sm">区间变化</p>
-                        <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full" id="trend-change-badge">-</span>
+                <div class="bg-gradient-to-br from-emerald-50 to-white rounded-3xl p-5 shadow-sm border border-emerald-100">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center gap-2">
+                            <div class="w-7 h-7 rounded-lg bg-emerald-100 flex items-center justify-center">
+                                <i class="fas fa-arrow-trend-down text-emerald-600 text-xs"></i>
+                            </div>
+                            <p id="trend-card-label-2" class="text-emerald-700 text-sm font-medium">区间变化</p>
+                        </div>
+                        <span class="bg-emerald-100 text-emerald-600 text-xs px-2 py-0.5 rounded-full" id="trend-change-badge">-</span>
                     </div>
-                    <h3 id="trend-change" class="text-2xl font-bold text-gray-900 mt-1">--</h3>
+                    <h3 id="trend-change" class="text-2xl font-bold text-gray-900">--</h3>
                 </div>
             </div>
 
-            <div class="bg-white p-4 rounded-3xl shadow-sm h-80 relative mb-6">
-                <canvas id="weightChart"></canvas>
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
-                <div class="bg-orange-50 p-4 rounded-2xl">
-                    <p id="stat-max-label" class="text-orange-600 text-xs font-bold uppercase">最高体重</p>
-                    <p id="stat-max" class="text-xl font-bold text-gray-900 mt-1">--</p>
-                </div>
-                <div class="bg-green-50 p-4 rounded-2xl">
-                    <p id="stat-min-label" class="text-green-600 text-xs font-bold uppercase">最低体重</p>
-                    <p id="stat-min" class="text-xl font-bold text-gray-900 mt-1">--</p>
+            <!-- 图表卡片 -->
+            <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100 mb-5">
+                <div class="h-72 relative">
+                    <canvas id="weightChart"></canvas>
                 </div>
             </div>
 
-            <button onclick="openWeightHistoryModal()" class="w-full mt-4 bg-emerald-600 text-white py-3 rounded-2xl font-semibold shadow-sm active:scale-95 transition-transform hover:bg-emerald-700">
-                查看全部历史
+            <!-- 统计卡片 -->
+            <div class="grid grid-cols-2 gap-4 mb-5">
+                <div class="bg-gradient-to-br from-orange-50 to-white rounded-2xl p-4 border border-orange-100">
+                    <div class="flex items-center gap-2 mb-1">
+                        <div class="w-6 h-6 rounded-lg bg-orange-100 flex items-center justify-center">
+                            <i class="fas fa-arrow-up text-orange-500 text-xs"></i>
+                        </div>
+                        <p id="stat-max-label" class="text-orange-600 text-xs font-semibold">最高体重</p>
+                    </div>
+                    <p id="stat-max" class="text-xl font-bold text-gray-900">--</p>
+                </div>
+                <div class="bg-gradient-to-br from-green-50 to-white rounded-2xl p-4 border border-green-100">
+                    <div class="flex items-center gap-2 mb-1">
+                        <div class="w-6 h-6 rounded-lg bg-green-100 flex items-center justify-center">
+                            <i class="fas fa-arrow-down text-green-500 text-xs"></i>
+                        </div>
+                        <p id="stat-min-label" class="text-green-600 text-xs font-semibold">最低体重</p>
+                    </div>
+                    <p id="stat-min" class="text-xl font-bold text-gray-900">--</p>
+                </div>
+            </div>
+
+            <!-- 查看历史按钮 -->
+            <button onclick="openWeightHistoryModal()" class="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-4 rounded-2xl font-bold shadow-lg shadow-indigo-200 active:scale-95 transition-transform flex justify-center items-center gap-2 hover:shadow-xl">
+                <i class="fas fa-history"></i>
+                <span>查看全部历史</span>
             </button>
         </section>
 
         <section id="view-calc" class="view-section hidden fade-in">
-            <h2 class="text-2xl font-bold mb-6">热量换算</h2>
+            <header class="mb-6 flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">热量换算</h1>
+                    <p class="text-sm text-gray-500">计算食物热量与运动消耗</p>
+                </div>
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-rose-400 to-orange-500 flex items-center justify-center text-white shadow-lg shadow-rose-200">
+                    <i class="fas fa-fire text-lg"></i>
+                </div>
+            </header>
             
-            <!-- 统一热量计算卡片（渐变） -->
-            <div class="bg-white rounded-3xl p-6 shadow-sm mb-6 space-y-4 border border-gray-100">
-                <div class="flex items-center justify-between">
+            <!-- 热量计算卡片 -->
+            <div class="bg-gradient-to-br from-rose-50 to-white rounded-3xl p-5 shadow-sm mb-5 border border-rose-100">
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="w-8 h-8 rounded-xl bg-rose-100 flex items-center justify-center">
+                        <i class="fas fa-utensils text-rose-600 text-sm"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-900">食材热量计算</h3>
+                </div>
+                <div class="space-y-3">
                     <div>
-                        <h3 class="text-2xl font-bold text-gray-900">食材热量 & 运动折算</h3>
+                        <label class="text-xs text-gray-500 mb-1 block">食品名称</label>
+                        <input id="food-name" type="text" placeholder="如：燕麦奶" class="w-full rounded-xl border border-rose-200 bg-white text-gray-900 placeholder-gray-400 px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-rose-500/30" />
                     </div>
-                </div>
-                <div class="grid grid-cols-1 gap-3">
-                    <label class="text-sm text-gray-600">食品名称
-                        <input id="food-name" type="text" placeholder="如：燕麦奶" class="mt-1 w-full rounded-2xl border border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-400 px-3 py-3 text-base focus:outline-none focus:ring-2 focus:ring-emerald-500/30" />
-                    </label>
-                    <label class="text-sm text-gray-600">数量 (默认 g / ml)
-                        <input id="food-amount" type="number" inputmode="decimal" placeholder="例如 250" class="mt-1 w-full rounded-2xl border border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-400 px-3 py-3 text-base focus:outline-none focus:ring-2 focus:ring-emerald-500/30" />
-                    </label>
-                    <label class="text-sm text-gray-600">单位热量 (kJ / 100 单位)
-                        <input id="food-unit-kcal" type="number" inputmode="decimal" placeholder="例如 54" class="mt-1 w-full rounded-2xl border border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-400 px-3 py-3 text-base focus:outline-none focus:ring-2 focus:ring-emerald-500/30" />
-                    </label>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <div class="bg-gray-50 rounded-2xl px-4 py-3 flex items-center justify-between border border-gray-100">
+                    <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <p class="text-xs text-gray-500">预估总热量</p>
-                            <p class="text-3xl font-bold text-gray-900" id="food-total-kcal">0</p>
-                        </div>
-                        <i class="fas fa-utensils text-2xl text-gray-400"></i>
-                    </div>
-                    <div class="bg-gray-50 rounded-2xl px-4 py-3 grid grid-cols-3 gap-2 text-center border border-gray-100">
-                        <div>
-                            <p class="text-[11px] text-gray-500">跑步</p>
-                            <p class="text-xl font-bold text-gray-900"><span id="calc-run">0</span><span class="text-xs ml-1 text-gray-500">分钟</span></p>
+                            <label class="text-xs text-gray-500 mb-1 block">数量 (g/ml)</label>
+                            <input id="food-amount" type="number" inputmode="decimal" placeholder="250" class="w-full rounded-xl border border-rose-200 bg-white text-gray-900 placeholder-gray-400 px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-rose-500/30" />
                         </div>
                         <div>
-                            <p class="text-[11px] text-gray-500">跳绳</p>
-                            <p class="text-xl font-bold text-gray-900"><span id="calc-rope">0</span><span class="text-xs ml-1 text-gray-500">分钟</span></p>
-                        </div>
-                        <div>
-                            <p class="text-[11px] text-gray-500">哑铃</p>
-                            <p class="text-xl font-bold text-gray-900"><span id="calc-dumbbell">0</span><span class="text-xs ml-1 text-gray-500">分钟</span></p>
+                            <label class="text-xs text-gray-500 mb-1 block">热量 (kJ/100g)</label>
+                            <input id="food-unit-kcal" type="number" inputmode="decimal" placeholder="54" class="w-full rounded-xl border border-rose-200 bg-white text-gray-900 placeholder-gray-400 px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-rose-500/30" />
                         </div>
                     </div>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <button onclick="calcFoodOnly()" class="w-full h-12 rounded-2xl bg-white text-emerald-600 font-semibold shadow-sm border border-emerald-100 active:scale-95 transition-transform flex items-center justify-center gap-2 hover:bg-emerald-50">
-                        <i class="fas fa-equals"></i> 计算
-                    </button>
-                    <button onclick="calcFoodKcal()" class="w-full h-12 rounded-2xl bg-emerald-600 text-white font-semibold shadow-lg active:scale-95 transition-transform flex items-center justify-center gap-2 hover:bg-emerald-700">
-                        <i class="fas fa-calculator"></i> 记录
-                    </button>
                 </div>
             </div>
 
+            <!-- 计算结果卡片 -->
+            <div class="bg-gradient-to-br from-orange-50 to-white rounded-3xl p-5 shadow-sm mb-5 border border-orange-100">
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="w-8 h-8 rounded-xl bg-orange-100 flex items-center justify-center">
+                        <i class="fas fa-fire-flame-curved text-orange-600 text-sm"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-900">计算结果</h3>
+                </div>
+                <div class="bg-gradient-to-r from-orange-500 to-rose-500 rounded-2xl p-4 mb-4">
+                    <p class="text-orange-100 text-xs mb-1">预估总热量</p>
+                    <div class="flex items-baseline gap-1">
+                        <span class="text-4xl font-bold text-white" id="food-total-kcal">0</span>
+                        <span class="text-orange-100 text-sm">kJ</span>
+                    </div>
+                </div>
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="bg-white rounded-xl p-3 text-center border border-orange-100">
+                        <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-2">
+                            <i class="fas fa-running text-blue-600 text-sm"></i>
+                        </div>
+                        <p class="text-[11px] text-gray-500">跑步</p>
+                        <p class="text-lg font-bold text-gray-900"><span id="calc-run">0</span><span class="text-xs text-gray-400">分钟</span></p>
+                    </div>
+                    <div class="bg-white rounded-xl p-3 text-center border border-orange-100">
+                        <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-2">
+                            <i class="fas fa-child text-green-600 text-sm"></i>
+                        </div>
+                        <p class="text-[11px] text-gray-500">跳绳</p>
+                        <p class="text-lg font-bold text-gray-900"><span id="calc-rope">0</span><span class="text-xs text-gray-400">分钟</span></p>
+                    </div>
+                    <div class="bg-white rounded-xl p-3 text-center border border-orange-100">
+                        <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center mx-auto mb-2">
+                            <i class="fas fa-dumbbell text-purple-600 text-sm"></i>
+                        </div>
+                        <p class="text-[11px] text-gray-500">哑铃</p>
+                        <p class="text-lg font-bold text-gray-900"><span id="calc-dumbbell">0</span><span class="text-xs text-gray-400">分钟</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 操作按钮 -->
+            <div class="grid grid-cols-2 gap-3 mb-5">
+                <button onclick="calcFoodOnly()" class="h-14 rounded-2xl bg-white text-rose-600 font-semibold shadow-sm border border-rose-200 active:scale-95 transition-transform flex items-center justify-center gap-2 hover:bg-rose-50">
+                    <i class="fas fa-calculator"></i> 计算
+                </button>
+                <button onclick="calcFoodKcal()" class="h-14 rounded-2xl bg-gradient-to-r from-rose-500 to-orange-500 text-white font-semibold shadow-lg shadow-rose-200 active:scale-95 transition-transform flex items-center justify-center gap-2 hover:shadow-xl">
+                    <i class="fas fa-plus"></i> 记录
+                </button>
+            </div>
+
             <!-- 历史查询列表 -->
-            <div class="bg-white rounded-3xl p-6 shadow-sm space-y-4 border border-gray-100">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm text-gray-500">历史查询</p>
-                        <h3 class="text-lg font-bold text-gray-900">食材热量记录</h3>
+            <div class="bg-white rounded-3xl p-5 shadow-sm border border-gray-100">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-xl bg-gray-100 flex items-center justify-center">
+                            <i class="fas fa-history text-gray-600 text-sm"></i>
+                        </div>
+                        <h3 class="font-bold text-gray-900">历史记录</h3>
                     </div>
                     <div class="flex gap-2">
-                        <button onclick="refreshCalcHistory()" class="text-gray-600 text-sm px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200">刷新</button>
-                        <button onclick="clearCalcHistory()" class="text-red-600 text-sm px-3 py-2 rounded-lg bg-red-50 hover:bg-red-100">清空</button>
+                        <button onclick="refreshCalcHistory()" class="text-gray-600 text-xs px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 transition-all">
+                            <i class="fas fa-sync-alt mr-1"></i>刷新
+                        </button>
+                        <button onclick="clearCalcHistory()" class="text-rose-600 text-xs px-3 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 transition-all">
+                            <i class="fas fa-trash mr-1"></i>清空
+                        </button>
                     </div>
                 </div>
                 <div id="calc-history" class="space-y-3 text-sm text-gray-700">
@@ -337,31 +513,41 @@
     <div id="weight-history-modal" class="fixed inset-0 hidden z-[60]">
         <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeWeightHistoryModal()"></div>
         <div class="absolute inset-x-0 bottom-0 sm:inset-0 sm:flex sm:items-center sm:justify-center">
-            <div class="bg-white w-full sm:max-w-lg sm:rounded-3xl rounded-t-3xl shadow-xl border border-gray-100 max-h-[80vh] flex flex-col">
-                <div class="px-6 py-4 border-b border-gray-100 space-y-3">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm text-gray-500">全部历史</p>
-                            <h3 class="text-lg font-bold text-gray-900">每日体重</h3>
+            <div class="bg-white w-full sm:max-w-lg sm:rounded-3xl rounded-t-3xl shadow-xl max-h-[85vh] flex flex-col">
+                <!-- 头部 -->
+                <div class="px-5 py-4 border-b border-gray-100">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-lg">
+                                <i class="fas fa-history"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-900">体重历史</h3>
+                                <p class="text-xs text-gray-500">查看全部记录</p>
+                            </div>
                         </div>
-                        <button class="w-9 h-9 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center" onclick="closeWeightHistoryModal()">
+                        <button class="w-9 h-9 rounded-xl bg-gray-100 text-gray-600 flex items-center justify-center hover:bg-gray-200 transition-all" onclick="closeWeightHistoryModal()">
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
-                    <div id="weight-history-tabs" class="flex gap-2">
-                        <button onclick="setWeightHistoryFilter('morning')" class="px-3 py-2 rounded-xl text-sm font-semibold bg-emerald-600 text-white shadow-sm">早晨空腹</button>
-                        <button onclick="setWeightHistoryFilter('night')" class="px-3 py-2 rounded-xl text-sm font-semibold bg-gray-100 text-gray-700">晚间睡前</button>
-                        <button onclick="setWeightHistoryFilter('all')" class="px-3 py-2 rounded-xl text-sm font-semibold bg-gray-100 text-gray-700">全部</button>
+                    
+                    <!-- 时段筛选 -->
+                    <div id="weight-history-tabs" class="flex gap-2 mb-3">
+                        <button onclick="setWeightHistoryFilter('morning')" class="flex-1 px-3 py-2 rounded-xl text-sm font-semibold bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-sm transition-all">🌅 早晨</button>
+                        <button onclick="setWeightHistoryFilter('night')" class="flex-1 px-3 py-2 rounded-xl text-sm font-semibold bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all">🌙 晚间</button>
+                        <button onclick="setWeightHistoryFilter('all')" class="flex-1 px-3 py-2 rounded-xl text-sm font-semibold bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all">全部</button>
                     </div>
-                    <div class="space-y-2">
-                        <div class="grid grid-cols-4 gap-2">
-                            <button class="px-3 py-2 rounded-xl text-xs font-semibold bg-gray-100 text-gray-700 active:scale-95 transition-transform" onclick="copyWeightHistoryToClipboard('all')">复制全部</button>
-                            <button class="px-3 py-2 rounded-xl text-xs font-semibold bg-gray-100 text-gray-700 active:scale-95 transition-transform" onclick="copyWeightHistoryToClipboard('7d')">近7天</button>
-                            <button class="px-3 py-2 rounded-xl text-xs font-semibold bg-gray-100 text-gray-700 active:scale-95 transition-transform" onclick="copyWeightHistoryToClipboard('1m')">近1月</button>
-                            <button class="px-3 py-2 rounded-xl text-xs font-semibold bg-gray-100 text-gray-700 active:scale-95 transition-transform" onclick="copyWeightHistoryToClipboard('2m')">近2月</button>
+                    
+                    <!-- 快捷复制 -->
+                    <div class="bg-gray-50 rounded-2xl p-3 space-y-2">
+                        <div class="flex flex-wrap gap-1.5">
+                            <button class="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white text-gray-600 border border-gray-200 hover:border-indigo-300 hover:text-indigo-600 active:scale-95 transition-all" onclick="copyWeightHistoryToClipboard('7d')">7天</button>
+                            <button class="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white text-gray-600 border border-gray-200 hover:border-indigo-300 hover:text-indigo-600 active:scale-95 transition-all" onclick="copyWeightHistoryToClipboard('1m')">1月</button>
+                            <button class="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white text-gray-600 border border-gray-200 hover:border-indigo-300 hover:text-indigo-600 active:scale-95 transition-all" onclick="copyWeightHistoryToClipboard('2m')">2月</button>
+                            <button class="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white text-gray-600 border border-gray-200 hover:border-indigo-300 hover:text-indigo-600 active:scale-95 transition-all" onclick="copyWeightHistoryToClipboard('all')">全部</button>
                         </div>
                         <div class="flex items-center gap-2">
-                            <select id="weight-history-copy-range" class="flex-1 px-3 py-2 rounded-xl text-xs font-semibold bg-gray-100 text-gray-700">
+                            <select id="weight-history-copy-range" class="flex-1 px-3 py-2 rounded-xl text-xs font-medium bg-white text-gray-700 border border-gray-200 focus:outline-none focus:border-indigo-300">
                                 <option value="3m">近3个月</option>
                                 <option value="4m">近4个月</option>
                                 <option value="5m">近5个月</option>
@@ -369,19 +555,33 @@
                                 <option value="1y">近一年</option>
                                 <option value="all">全部历史</option>
                             </select>
-                            <button class="px-3 py-2 rounded-xl text-xs font-semibold bg-gray-900 text-white active:scale-95 transition-transform" onclick="copyWeightHistoryToClipboard(document.getElementById('weight-history-copy-range')?.value || 'all')">复制</button>
+                            <button class="px-4 py-2 rounded-xl text-xs font-semibold bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-sm active:scale-95 transition-all" onclick="copyWeightHistoryToClipboard(document.getElementById('weight-history-copy-range')?.value || 'all')">
+                                <i class="fas fa-copy mr-1"></i>复制
+                            </button>
                         </div>
-                        <div class="grid grid-cols-3 gap-2">
-                            <button class="px-3 py-2 rounded-xl text-xs font-semibold bg-gray-100 text-gray-700 active:scale-95 transition-transform" onclick="downloadWeightHistoryCsv(document.getElementById('weight-history-copy-range')?.value || 'all')">下载CSV</button>
-                            <button class="px-3 py-2 rounded-xl text-xs font-semibold bg-gray-100 text-gray-700 active:scale-95 transition-transform" onclick="downloadAllLogsJson()">下载JSON</button>
-                            <button class="px-3 py-2 rounded-xl text-xs font-semibold bg-gray-100 text-gray-700 active:scale-95 transition-transform" onclick="openImportJson()">导入JSON</button>
+                        <div class="flex gap-2">
+                            <button class="flex-1 px-3 py-2 rounded-xl text-xs font-medium bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 active:scale-95 transition-all" onclick="downloadWeightHistoryCsv(document.getElementById('weight-history-copy-range')?.value || 'all')">
+                                <i class="fas fa-file-csv mr-1 text-green-500"></i>CSV
+                            </button>
+                            <button class="flex-1 px-3 py-2 rounded-xl text-xs font-medium bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 active:scale-95 transition-all" onclick="downloadAllLogsJson()">
+                                <i class="fas fa-file-code mr-1 text-blue-500"></i>JSON
+                            </button>
+                            <button class="flex-1 px-3 py-2 rounded-xl text-xs font-medium bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 active:scale-95 transition-all" onclick="openImportJson()">
+                                <i class="fas fa-file-import mr-1 text-orange-500"></i>导入
+                            </button>
                         </div>
                         <input id="import-json-input" type="file" accept="application/json" class="hidden" onchange="importLogsFromJsonFile(event)" />
                     </div>
                 </div>
-                <div id="weight-history-list" class="px-6 py-4 overflow-y-auto text-sm text-gray-700"></div>
-                <div class="px-6 py-4 border-t border-gray-100">
-                    <button class="w-full bg-gray-900 text-white py-3 rounded-2xl font-semibold active:scale-95 transition-transform" onclick="closeWeightHistoryModal()">关闭</button>
+                
+                <!-- 列表 -->
+                <div id="weight-history-list" class="px-5 py-4 overflow-y-auto flex-1"></div>
+                
+                <!-- 底部 -->
+                <div class="px-5 py-4 border-t border-gray-100">
+                    <button class="w-full bg-gradient-to-r from-gray-800 to-gray-900 text-white py-3.5 rounded-2xl font-semibold shadow-lg active:scale-95 transition-transform" onclick="closeWeightHistoryModal()">
+                        关闭
+                    </button>
                 </div>
             </div>
         </div>
@@ -390,40 +590,52 @@
     <div id="edit-weight-modal" class="fixed inset-0 hidden z-[65]">
         <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeEditWeightModal()"></div>
         <div class="absolute inset-x-0 bottom-0 sm:inset-0 sm:flex sm:items-center sm:justify-center">
-            <div class="bg-white w-full sm:max-w-md sm:rounded-3xl rounded-t-3xl shadow-xl border border-gray-100 max-h-[80vh] flex flex-col">
-                <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-                    <div>
-                        <p class="text-sm text-gray-500">编辑体重记录</p>
-                        <h3 class="text-lg font-bold text-gray-900">修改时间、体重与时段</h3>
+            <div class="bg-white w-full sm:max-w-md sm:rounded-3xl rounded-t-3xl shadow-xl max-h-[80vh] flex flex-col">
+                <!-- 头部 -->
+                <div class="px-5 py-4 border-b border-gray-100">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white shadow-lg">
+                                <i class="fas fa-edit"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-900">编辑体重</h3>
+                                <p class="text-xs text-gray-500">修改记录详情</p>
+                            </div>
+                        </div>
+                        <button class="w-9 h-9 rounded-xl bg-gray-100 text-gray-600 flex items-center justify-center hover:bg-gray-200 transition-all" onclick="closeEditWeightModal()">
+                            <i class="fas fa-times"></i>
+                        </button>
                     </div>
-                    <button class="w-9 h-9 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center" onclick="closeEditWeightModal()">
-                        <i class="fas fa-times"></i>
-                    </button>
                 </div>
 
-                <div class="px-6 py-5 space-y-4 overflow-y-auto">
-                    <label class="text-sm text-gray-700 block">
-                        时间
-                        <input id="edit-weight-datetime" type="datetime-local" class="mt-1 w-full rounded-xl border border-gray-200 px-3 py-3 text-base focus:outline-none focus:ring-2 focus:ring-emerald-500/30" />
-                    </label>
+                <!-- 内容 -->
+                <div class="px-5 py-5 space-y-4 overflow-y-auto">
+                    <div class="bg-gradient-to-r from-gray-50 to-white rounded-2xl p-4 border border-gray-100">
+                        <label class="text-xs text-gray-500 mb-2 block">记录时间</label>
+                        <input id="edit-weight-datetime" type="datetime-local" class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-emerald-500/30" />
+                    </div>
 
-                    <label class="text-sm text-gray-700 block">
-                        体重 (kg)
-                        <input id="edit-weight-value" type="number" step="0.01" class="mt-1 w-full rounded-xl border border-gray-200 px-3 py-3 text-base focus:outline-none focus:ring-2 focus:ring-emerald-500/30" placeholder="0.00" />
-                    </label>
+                    <div class="bg-gradient-to-r from-emerald-50 to-white rounded-2xl p-4 border border-emerald-100">
+                        <label class="text-xs text-gray-500 mb-2 block">体重 (kg)</label>
+                        <input id="edit-weight-value" type="number" step="0.01" class="w-full rounded-xl border border-emerald-200 bg-white px-4 py-3 text-2xl font-bold text-center focus:outline-none focus:ring-2 focus:ring-emerald-500/30" placeholder="0.00" />
+                    </div>
 
-                    <div>
-                        <p class="text-sm text-gray-700 mb-2">记录时段</p>
-                        <div class="flex bg-gray-100 rounded-lg p-1">
-                            <button id="btn-edit-period-morning" class="flex-1 px-3 py-2 rounded-md text-sm font-medium transition-all bg-white shadow text-emerald-600" onclick="setEditWeightPeriod('morning')">早晨空腹</button>
-                            <button id="btn-edit-period-night" class="flex-1 px-3 py-2 rounded-md text-sm font-medium text-gray-500 transition-all" onclick="setEditWeightPeriod('night')">晚间睡前</button>
+                    <div class="bg-gradient-to-r from-amber-50 to-white rounded-2xl p-4 border border-amber-100">
+                        <label class="text-xs text-gray-500 mb-2 block">记录时段</label>
+                        <div class="flex bg-amber-100/50 rounded-xl p-1">
+                            <button id="btn-edit-period-morning" class="flex-1 px-3 py-2.5 rounded-lg text-sm font-medium transition-all bg-white shadow text-amber-600" onclick="setEditWeightPeriod('morning')">🌅 早晨空腹</button>
+                            <button id="btn-edit-period-night" class="flex-1 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-500 transition-all" onclick="setEditWeightPeriod('night')">🌙 晚间睡前</button>
                         </div>
                     </div>
                 </div>
 
-                <div class="px-6 py-4 border-t border-gray-100 flex gap-3">
-                    <button class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-2xl font-semibold active:scale-95 transition-transform" onclick="closeEditWeightModal()">取消</button>
-                    <button id="btn-edit-weight-save" class="flex-1 bg-emerald-600 text-white py-3 rounded-2xl font-semibold active:scale-95 transition-transform hover:bg-emerald-700" onclick="submitEditWeight()">保存修改</button>
+                <!-- 底部按钮 -->
+                <div class="px-5 py-4 border-t border-gray-100 flex gap-3">
+                    <button class="flex-1 bg-gray-100 text-gray-700 py-3.5 rounded-2xl font-semibold active:scale-95 transition-transform hover:bg-gray-200" onclick="closeEditWeightModal()">取消</button>
+                    <button id="btn-edit-weight-save" class="flex-1 bg-gradient-to-r from-emerald-500 to-teal-500 text-white py-3.5 rounded-2xl font-semibold shadow-lg shadow-emerald-200 active:scale-95 transition-transform" onclick="submitEditWeight()">
+                        <i class="fas fa-check mr-1"></i>保存
+                    </button>
                 </div>
             </div>
         </div>
@@ -432,51 +644,90 @@
     <div id="daily-edit-modal" class="fixed inset-0 hidden z-[64]">
         <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeDailyEditModal()"></div>
         <div class="absolute inset-x-0 bottom-0 sm:inset-0 sm:flex sm:items-center sm:justify-center">
-            <div class="bg-white w-full sm:max-w-md sm:rounded-3xl rounded-t-3xl shadow-xl border border-gray-100 max-h-[85vh] flex flex-col">
-                <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-                    <div>
-                        <p class="text-sm text-gray-500">编辑每日数据</p>
-                        <h3 id="daily-edit-title" class="text-lg font-bold text-gray-900">--</h3>
+            <div class="bg-white w-full sm:max-w-md sm:rounded-3xl rounded-t-3xl shadow-xl max-h-[85vh] flex flex-col">
+                <!-- 头部 -->
+                <div class="px-5 py-4 border-b border-gray-100">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white shadow-lg">
+                                <i class="fas fa-calendar-day"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-900">编辑每日数据</h3>
+                                <p id="daily-edit-title" class="text-xs text-gray-500">--</p>
+                            </div>
+                        </div>
+                        <button class="w-9 h-9 rounded-xl bg-gray-100 text-gray-600 flex items-center justify-center hover:bg-gray-200 transition-all" onclick="closeDailyEditModal()">
+                            <i class="fas fa-times"></i>
+                        </button>
                     </div>
-                    <button class="w-9 h-9 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center" onclick="closeDailyEditModal()">
-                        <i class="fas fa-times"></i>
+                </div>
+
+                <!-- 内容 -->
+                <div class="px-5 py-5 space-y-4 overflow-y-auto flex-1">
+                    <!-- 体重区域 -->
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-4 border border-blue-100">
+                        <div class="flex items-center gap-2 mb-3">
+                            <i class="fas fa-weight text-blue-500"></i>
+                            <span class="text-sm font-semibold text-gray-700">体重记录</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="text-xs text-gray-500 mb-1 block">🌅 早晨空腹</label>
+                                <input id="edit-daily-morning" type="number" step="0.01" class="w-full rounded-xl border border-blue-200 bg-white px-3 py-2.5 text-base font-semibold text-center focus:outline-none focus:ring-2 focus:ring-blue-500/30" placeholder="--" />
+                            </div>
+                            <div>
+                                <label class="text-xs text-gray-500 mb-1 block">🌙 晚间睡前</label>
+                                <input id="edit-daily-night" type="number" step="0.01" class="w-full rounded-xl border border-blue-200 bg-white px-3 py-2.5 text-base font-semibold text-center focus:outline-none focus:ring-2 focus:ring-blue-500/30" placeholder="--" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 饮食区域 -->
+                    <div class="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl p-4 border border-emerald-100">
+                        <div class="flex items-center gap-2 mb-3">
+                            <i class="fas fa-utensils text-emerald-500"></i>
+                            <span class="text-sm font-semibold text-gray-700">饮食记录</span>
+                        </div>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="text-xs text-gray-500 mb-1 block">午餐</label>
+                                <textarea id="edit-daily-lunch" rows="2" class="w-full rounded-xl border border-emerald-200 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/30" placeholder="今天午餐吃了什么？"></textarea>
+                            </div>
+                            <div>
+                                <label class="text-xs text-gray-500 mb-1 block">晚餐</label>
+                                <textarea id="edit-daily-dinner" rows="2" class="w-full rounded-xl border border-emerald-200 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/30" placeholder="今天晚餐吃了什么？"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 运动区域 -->
+                    <div class="bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl p-4 border border-orange-100">
+                        <div class="flex items-center gap-2 mb-3">
+                            <i class="fas fa-dumbbell text-orange-500"></i>
+                            <span class="text-sm font-semibold text-gray-700">运动记录</span>
+                        </div>
+                        <textarea id="edit-daily-workout" rows="2" class="w-full rounded-xl border border-orange-200 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/30" placeholder="今天锻炼了什么？"></textarea>
+                    </div>
+                </div>
+
+                <!-- 底部按钮 -->
+                <div class="px-5 py-4 border-t border-gray-100 flex gap-3">
+                    <button class="flex-1 bg-gray-100 text-gray-700 py-3.5 rounded-2xl font-semibold active:scale-95 transition-transform hover:bg-gray-200" onclick="closeDailyEditModal()">取消</button>
+                    <button id="btn-edit-daily-save" class="flex-1 bg-gradient-to-r from-indigo-500 to-purple-500 text-white py-3.5 rounded-2xl font-semibold shadow-lg shadow-indigo-200 active:scale-95 transition-transform" onclick="submitDailyEdit()">
+                        <i class="fas fa-check mr-1"></i>保存
                     </button>
-                </div>
-                <div class="px-6 py-5 space-y-4 overflow-y-auto">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <label class="text-sm text-gray-700 block">
-                            早晨空腹体重 (kg)
-                            <input id="edit-daily-morning" type="number" step="0.01" class="mt-1 w-full rounded-xl border border-gray-200 px-3 py-3 text-base focus:outline-none focus:ring-2 focus:ring-emerald-500/30" placeholder="留空不改" />
-                        </label>
-                        <label class="text-sm text-gray-700 block">
-                            晚间睡前体重 (kg)
-                            <input id="edit-daily-night" type="number" step="0.01" class="mt-1 w-full rounded-xl border border-gray-200 px-3 py-3 text-base focus:outline-none focus:ring-2 focus:ring-emerald-500/30" placeholder="留空不改" />
-                        </label>
-                    </div>
-                    <label class="text-sm text-gray-700 block">
-                        午餐吃了什么？
-                        <textarea id="edit-daily-lunch" rows="2" class="mt-1 w-full rounded-2xl border border-gray-200 px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/30" placeholder="例如：鸡胸肉+沙拉"></textarea>
-                    </label>
-                    <label class="text-sm text-gray-700 block">
-                        晚餐吃了什么？
-                        <textarea id="edit-daily-dinner" rows="2" class="mt-1 w-full rounded-2xl border border-gray-200 px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/30" placeholder="例如：清炒时蔬+牛奶"></textarea>
-                    </label>
-                    <label class="text-sm text-gray-700 block">
-                        今天锻炼了什么？
-                        <textarea id="edit-daily-workout" rows="2" class="mt-1 w-full rounded-2xl border border-gray-200 px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/30" placeholder="例如：跑步5km / HIIT 20分钟"></textarea>
-                    </label>
-                </div>
-                <div class="px-6 py-4 border-t border-gray-100 flex gap-3">
-                    <button class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-2xl font-semibold active:scale-95 transition-transform" onclick="closeDailyEditModal()">取消</button>
-                    <button id="btn-edit-daily-save" class="flex-1 bg-emerald-600 text-white py-3 rounded-2xl font-semibold active:scale-95 transition-transform hover:bg-emerald-700" onclick="submitDailyEdit()">保存</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="toast" class="fixed top-12 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-full shadow-xl opacity-0 transition-opacity duration-300 pointer-events-none z-[100] flex items-center gap-2">
-        <i class="fas fa-check-circle text-green-400"></i>
-        <span id="toast-msg">保存成功</span>
+    <!-- Toast 提示 -->
+    <div id="toast" class="fixed top-14 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-gray-800 to-gray-900 text-white px-5 py-3 rounded-2xl shadow-2xl opacity-0 transition-all duration-300 pointer-events-none z-[100] flex items-center gap-3">
+        <div class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center">
+            <i class="fas fa-check text-white text-sm"></i>
+        </div>
+        <span id="toast-msg" class="font-medium">保存成功</span>
     </div>
 
     <script type="module">
@@ -637,11 +888,11 @@
             appData.editWeightPeriod = period === 'night' ? 'night' : 'morning';
             if (els.btnEditPeriodMorning && els.btnEditPeriodNight) {
                 if (appData.editWeightPeriod === 'morning') {
-                    els.btnEditPeriodMorning.className = "flex-1 px-3 py-2 rounded-md text-sm font-medium transition-all bg-white shadow text-emerald-600";
-                    els.btnEditPeriodNight.className = "flex-1 px-3 py-2 rounded-md text-sm font-medium text-gray-500 transition-all";
+                    els.btnEditPeriodMorning.className = "flex-1 px-3 py-2.5 rounded-lg text-sm font-medium transition-all bg-white shadow text-amber-600";
+                    els.btnEditPeriodNight.className = "flex-1 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-500 transition-all";
                 } else {
-                    els.btnEditPeriodNight.className = "flex-1 px-3 py-2 rounded-md text-sm font-medium transition-all bg-white shadow text-emerald-600";
-                    els.btnEditPeriodMorning.className = "flex-1 px-3 py-2 rounded-md text-sm font-medium text-gray-500 transition-all";
+                    els.btnEditPeriodNight.className = "flex-1 px-3 py-2.5 rounded-lg text-sm font-medium transition-all bg-white shadow text-amber-600";
+                    els.btnEditPeriodMorning.className = "flex-1 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-500 transition-all";
                 }
             }
         };
@@ -783,6 +1034,180 @@
             }
         };
 
+        // ================= 晚餐和锻炼预设方案 =================
+        const DINNER_PRESETS = [
+            '800ml黑豆浆水（20g黑豆浆粉➕15g亚麻籽粉）➕100g鸡胸肉',
+            '800ml黑豆浆水（20g黑豆浆粉➕15g亚麻籽粉）➕100g鸡胸肉➕2块欧扎克全麦脆'
+        ];
+
+        const WORKOUT_PRESETS = [
+            '跳绳300×3组（共900个）➕开合跳50个➕胯下击掌50个➕原地高抬腿100下',
+            '跳绳300×6组（共1800个）➕开合跳100个➕胯下击掌100个➕原地高抬腿200下',
+            '跳绳300×10组（共3000个）➕开合跳150个➕胯下击掌150个➕原地高抬腿300下',
+            '无氧训练30分钟'
+        ];
+
+        const WORKOUT_TIME_LABELS = {
+            morning: '上午中饭前空腹',
+            evening: '下午晚饭前空腹',
+            night: '下午晚饭后'
+        };
+
+        // 存储各时段选择状态
+        const workoutSelections = {
+            morning: null,  // null=未选, -1=未锻炼, 0-3=方案索引
+            evening: null,
+            night: null
+        };
+
+        // 存储各时段的无氧选择（独立于跳绳）
+        const workoutAnaerobic = {
+            morning: false,
+            evening: false,
+            night: false
+        };
+
+        // 选择晚餐方案
+        window.selectDinnerPreset = (index) => {
+            const preset = DINNER_PRESETS[index];
+            if (!preset) return;
+            const textarea = document.getElementById('input-dinner-note');
+            if (textarea) {
+                textarea.value = preset;
+                textarea.focus();
+            }
+            // 更新按钮选中状态
+            document.querySelectorAll('.dinner-preset-btn').forEach((btn, i) => {
+                if (i === index) {
+                    btn.classList.remove('bg-amber-50', 'text-amber-700', 'border-amber-200');
+                    btn.classList.add('bg-amber-500', 'text-white', 'border-amber-500');
+                } else {
+                    btn.classList.remove('bg-amber-500', 'text-white', 'border-amber-500');
+                    btn.classList.add('bg-amber-50', 'text-amber-700', 'border-amber-200');
+                }
+            });
+        };
+
+        // 选择锻炼方案（分时段，跳绳互斥，无氧独立）
+        window.selectWorkoutPreset = (timeSlot, index) => {
+            const colorMap = {
+                morning: { active: ['bg-blue-500', 'text-white', 'border-blue-500'], inactive: ['bg-white', 'text-blue-700', 'border-blue-200'] },
+                evening: { active: ['bg-orange-500', 'text-white', 'border-orange-500'], inactive: ['bg-white', 'text-orange-700', 'border-orange-200'] },
+                night: { active: ['bg-purple-500', 'text-white', 'border-purple-500'], inactive: ['bg-white', 'text-purple-700', 'border-purple-200'] }
+            };
+            const colors = colorMap[timeSlot];
+            const btnClass = `workout-preset-btn-${timeSlot}`;
+            const btns = document.querySelectorAll(`.${btnClass}`);
+
+            if (index === 3) {
+                // 无氧：切换选中状态（可与跳绳同时选）
+                workoutAnaerobic[timeSlot] = !workoutAnaerobic[timeSlot];
+                const btn = btns[3];
+                if (workoutAnaerobic[timeSlot]) {
+                    btn.classList.remove(...colors.inactive);
+                    btn.classList.add(...colors.active);
+                } else {
+                    btn.classList.remove(...colors.active);
+                    btn.classList.add(...colors.inactive);
+                }
+            } else if (index === -1) {
+                // 未锻炼：清除该时段所有选择
+                workoutSelections[timeSlot] = -1;
+                workoutAnaerobic[timeSlot] = false;
+                btns.forEach((btn, i) => {
+                    btn.classList.remove(...colors.active, 'bg-gray-500');
+                    if (i === 4) {
+                        // "未锻炼"按钮高亮
+                        btn.classList.add('bg-gray-500', 'text-white', 'border-gray-500');
+                        btn.classList.remove('text-gray-500', 'border-gray-200');
+                    } else if (i < 3) {
+                        btn.classList.add(...colors.inactive);
+                    } else {
+                        btn.classList.add(...colors.inactive);
+                    }
+                });
+            } else {
+                // 跳绳方案（0-2）：互斥选择，取消"未锻炼"状态
+                workoutSelections[timeSlot] = index;
+                btns.forEach((btn, i) => {
+                    if (i < 3) {
+                        // 跳绳按钮
+                        if (i === index) {
+                            btn.classList.remove(...colors.inactive);
+                            btn.classList.add(...colors.active);
+                        } else {
+                            btn.classList.remove(...colors.active);
+                            btn.classList.add(...colors.inactive);
+                        }
+                    } else if (i === 4) {
+                        // 取消"未锻炼"高亮
+                        btn.classList.remove('bg-gray-500', 'text-white', 'border-gray-500');
+                        btn.classList.add('bg-white', 'text-gray-500', 'border-gray-200');
+                    }
+                    // 无氧按钮(i===3)保持原状态
+                });
+            }
+            
+            // 生成拼接后的备注
+            updateWorkoutNote();
+        };
+
+        // 根据各时段选择生成完整备注
+        function updateWorkoutNote() {
+            const parts = [];
+            for (const [slot, label] of Object.entries(WORKOUT_TIME_LABELS)) {
+                const jumpIdx = workoutSelections[slot];
+                const hasAnaerobic = workoutAnaerobic[slot];
+                
+                // 未锻炼
+                if (jumpIdx === -1) {
+                    parts.push(`${label}：未锻炼`);
+                    continue;
+                }
+                
+                // 收集该时段的内容
+                const items = [];
+                if (jumpIdx !== null && jumpIdx >= 0 && jumpIdx < 3 && WORKOUT_PRESETS[jumpIdx]) {
+                    items.push(WORKOUT_PRESETS[jumpIdx]);
+                }
+                if (hasAnaerobic) {
+                    items.push(WORKOUT_PRESETS[3]);
+                }
+                
+                if (items.length > 0) {
+                    parts.push(`${label}：${items.join('➕')}`);
+                }
+            }
+            
+            const textarea = document.getElementById('input-workout-note');
+            if (textarea && parts.length > 0) {
+                textarea.value = parts.join('｜');
+            }
+        }
+
+        // 重置锻炼选择状态
+        function resetWorkoutSelections() {
+            workoutSelections.morning = null;
+            workoutSelections.evening = null;
+            workoutSelections.night = null;
+            workoutAnaerobic.morning = false;
+            workoutAnaerobic.evening = false;
+            workoutAnaerobic.night = false;
+            // 重置按钮样式
+            document.querySelectorAll('.workout-preset-btn-morning').forEach((btn, i) => {
+                btn.classList.remove('bg-blue-500', 'text-white', 'border-blue-500', 'bg-gray-500', 'border-gray-500');
+                btn.classList.add('bg-white', i < 4 ? 'text-blue-700' : 'text-gray-500', i < 4 ? 'border-blue-200' : 'border-gray-200');
+            });
+            document.querySelectorAll('.workout-preset-btn-evening').forEach((btn, i) => {
+                btn.classList.remove('bg-orange-500', 'text-white', 'border-orange-500', 'bg-gray-500', 'border-gray-500');
+                btn.classList.add('bg-white', i < 4 ? 'text-orange-700' : 'text-gray-500', i < 4 ? 'border-orange-200' : 'border-gray-200');
+            });
+            document.querySelectorAll('.workout-preset-btn-night').forEach((btn, i) => {
+                btn.classList.remove('bg-purple-500', 'text-white', 'border-purple-500', 'bg-gray-500', 'border-gray-500');
+                btn.classList.add('bg-white', i < 4 ? 'text-purple-700' : 'text-gray-500', i < 4 ? 'border-purple-200' : 'border-gray-200');
+            });
+        }
+
         // 3.1 保存午/晚餐/运动备注（支持单独保存或一键保存）
         window.saveMealNote = async (type = 'all') => {
             const btn = document.getElementById('btn-save-meal-notes');
@@ -832,7 +1257,10 @@
                 const shouldClearAll = type === 'all';
                 if (shouldClearAll || type === 'lunch') mealNoteEls.lunch && (mealNoteEls.lunch.value = '');
                 if (shouldClearAll || type === 'dinner') mealNoteEls.dinner && (mealNoteEls.dinner.value = '');
-                if (shouldClearAll || type === 'workout') mealNoteEls.workout && (mealNoteEls.workout.value = '');
+                if (shouldClearAll || type === 'workout') {
+                    mealNoteEls.workout && (mealNoteEls.workout.value = '');
+                    resetWorkoutSelections();
+                }
                 updateTodayMealStatus();
             } catch (e) {
                 console.error(e);
@@ -1360,8 +1788,8 @@
                 if (typeof window.filterChart === 'function') window.filterChart(30); // 默认显示30天
             }
 
-            // 如果切换到记录页，根据当前时间自动设置时段
-            if(viewName === 'record') {
+            // 如果切换到首页，根据当前时间自动设置体重记录时段
+            if(viewName === 'home') {
                 const now = new Date();
                 const hour = now.getHours();
                 // 凌晨0点到中午12点前 -> 早晨空腹
@@ -1378,9 +1806,9 @@
                 els.weightHistoryTabs.querySelectorAll('button').forEach(btn => {
                     const active = btn.getAttribute('onclick')?.includes(`'${filter}'`);
                     if (active) {
-                        btn.className = "px-3 py-2 rounded-xl text-sm font-semibold bg-emerald-600 text-white shadow-sm";
+                        btn.className = "flex-1 px-3 py-2 rounded-xl text-sm font-semibold bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-sm transition-all";
                     } else {
-                        btn.className = "px-3 py-2 rounded-xl text-sm font-semibold bg-gray-100 text-gray-700";
+                        btn.className = "flex-1 px-3 py-2 rounded-xl text-sm font-semibold bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all";
                     }
                 });
             }
@@ -1392,11 +1820,11 @@
             appData.weightInputPeriod = period === 'night' ? 'night' : 'morning';
             if (els.btnPeriodMorning && els.btnPeriodNight) {
                 if (appData.weightInputPeriod === 'morning') {
-                    els.btnPeriodMorning.className = "px-3 py-1 rounded-md text-sm font-medium transition-all bg-white shadow text-emerald-600";
-                    els.btnPeriodNight.className = "px-3 py-1 rounded-md text-sm font-medium text-gray-500 transition-all";
+                    els.btnPeriodMorning.className = "flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-all bg-white shadow text-amber-600";
+                    els.btnPeriodNight.className = "flex-1 px-3 py-2 rounded-lg text-sm font-medium text-gray-500 transition-all";
                 } else {
-                    els.btnPeriodNight.className = "px-3 py-1 rounded-md text-sm font-medium transition-all bg-white shadow text-emerald-600";
-                    els.btnPeriodMorning.className = "px-3 py-1 rounded-md text-sm font-medium text-gray-500 transition-all";
+                    els.btnPeriodNight.className = "flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-all bg-white shadow text-amber-600";
+                    els.btnPeriodMorning.className = "flex-1 px-3 py-2 rounded-lg text-sm font-medium text-gray-500 transition-all";
                 }
             }
         };
@@ -1562,35 +1990,40 @@
             els.recentList.innerHTML = "";
             const recentDays = buildDailyAggregation(appData.logs).slice(0, 7);
             if (!recentDays.length) {
-                els.recentList.innerHTML = '<li class="text-center text-gray-400 py-4">暂无体重记录</li>';
+                els.recentList.innerHTML = '<li class="text-center text-gray-400 py-6"><i class="fas fa-inbox text-3xl mb-2 block opacity-50"></i>暂无体重记录</li>';
             } else {
-                recentDays.forEach(day => {
+                recentDays.forEach((day, index) => {
                     const morningVal = day.morning ? formatWeight(day.morning.value) : '--';
                     const nightVal = day.night ? formatWeight(day.night.value) : '--';
                     const lunch = day.lunch || '--';
                     const dinner = day.dinner || '--';
                     const workout = day.workout || '--';
+                    const isToday = day.ymd === getYmd(Date.now());
                     const li = document.createElement('li');
-                    li.className = "bg-white border border-gray-100 rounded-2xl px-4 py-3 shadow-sm";
+                    li.className = `bg-gradient-to-r ${isToday ? 'from-emerald-50 to-teal-50 border-emerald-200' : 'from-white to-gray-50 border-gray-100'} border rounded-2xl px-4 py-3 shadow-sm`;
                     li.innerHTML = `
                         <div class="flex items-center justify-between mb-2">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center">
-                                    <i class="fas fa-calendar-day text-emerald-500"></i>
+                                <div class="w-10 h-10 rounded-xl ${isToday ? 'bg-gradient-to-br from-emerald-400 to-teal-500 text-white' : 'bg-gray-100 text-gray-500'} flex items-center justify-center shadow-sm">
+                                    <i class="fas fa-calendar-day text-sm"></i>
                                 </div>
                                 <div>
-                                    <p class="font-bold text-gray-800">${day.ymd}</p>
-                                    <p class="text-xs text-gray-400">早：${morningVal} kg · 晚：${nightVal} kg</p>
+                                    <p class="font-bold text-gray-800">${day.ymd} ${isToday ? '<span class="text-xs text-emerald-600 bg-emerald-100 px-1.5 py-0.5 rounded ml-1">今天</span>' : ''}</p>
+                                    <div class="flex items-center gap-2 text-xs text-gray-500 mt-0.5">
+                                        <span class="flex items-center gap-1"><i class="fas fa-sun text-amber-400"></i>${morningVal}</span>
+                                        <span class="flex items-center gap-1"><i class="fas fa-moon text-indigo-400"></i>${nightVal}</span>
+                                        <span class="text-gray-300">kg</span>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <button class="text-emerald-600 text-sm px-3 py-2 rounded-lg hover:bg-emerald-50" onclick="openDailyEditModal('${day.ymd}')">编辑</button>
-                            </div>
+                            <button class="text-gray-400 hover:text-emerald-600 w-9 h-9 rounded-xl hover:bg-emerald-50 flex items-center justify-center transition-all" onclick="openDailyEditModal('${day.ymd}')">
+                                <i class="fas fa-pen text-sm"></i>
+                            </button>
                         </div>
-                        <div class="text-[12px] text-gray-600 space-y-1">
-                            <p>午餐：${lunch}</p>
-                            <p>晚餐：${dinner}</p>
-                            <p>运动：${workout}</p>
+                        <div class="text-[11px] text-gray-500 space-y-1 pl-[52px]">
+                            <p class="truncate"><span class="text-gray-400">午餐</span> ${lunch}</p>
+                            <p class="truncate"><span class="text-gray-400">晚餐</span> ${dinner}</p>
+                            <p class="truncate"><span class="text-gray-400">运动</span> ${workout}</p>
                         </div>
                     `;
                     els.recentList.appendChild(li);
@@ -1974,15 +2407,15 @@
             appData.trendMode = mode === 'metabolic' ? 'metabolic' : 'weight';
             if (els.trendBtnWeight && els.trendBtnMetabolic) {
                 if (appData.trendMode === 'weight') {
-                    els.trendBtnWeight.classList.add('bg-emerald-600','text-white','shadow');
-                    els.trendBtnWeight.classList.remove('text-emerald-700');
-                    els.trendBtnMetabolic.classList.remove('bg-emerald-600','text-white','shadow');
-                    els.trendBtnMetabolic.classList.add('text-emerald-700');
+                    els.trendBtnWeight.classList.add('bg-gradient-to-r', 'from-emerald-500', 'to-teal-500', 'text-white', 'shadow-sm');
+                    els.trendBtnWeight.classList.remove('text-gray-600', 'hover:bg-gray-50');
+                    els.trendBtnMetabolic.classList.remove('bg-gradient-to-r', 'from-emerald-500', 'to-teal-500', 'text-white', 'shadow-sm');
+                    els.trendBtnMetabolic.classList.add('text-gray-600', 'hover:bg-gray-50');
                 } else {
-                    els.trendBtnMetabolic.classList.add('bg-emerald-600','text-white','shadow');
-                    els.trendBtnMetabolic.classList.remove('text-emerald-700');
-                    els.trendBtnWeight.classList.remove('bg-emerald-600','text-white','shadow');
-                    els.trendBtnWeight.classList.add('text-emerald-700');
+                    els.trendBtnMetabolic.classList.add('bg-gradient-to-r', 'from-emerald-500', 'to-teal-500', 'text-white', 'shadow-sm');
+                    els.trendBtnMetabolic.classList.remove('text-gray-600', 'hover:bg-gray-50');
+                    els.trendBtnWeight.classList.remove('bg-gradient-to-r', 'from-emerald-500', 'to-teal-500', 'text-white', 'shadow-sm');
+                    els.trendBtnWeight.classList.add('text-gray-600', 'hover:bg-gray-50');
                 }
             }
 
@@ -1997,12 +2430,13 @@
             // 更新按钮样式
             const btns = document.querySelectorAll('.filter-btn');
             btns.forEach(b => {
-                if(b.innerText.includes(days === 999 ? '全部' : days + '天')) {
-                    b.classList.remove('bg-emerald-50', 'text-emerald-700');
-                    b.classList.add('bg-emerald-600', 'text-white');
+                const range = parseInt(b.dataset.range);
+                if (range === days) {
+                    b.classList.remove('bg-white', 'text-gray-600', 'border', 'border-gray-200');
+                    b.classList.add('bg-gradient-to-r', 'from-indigo-500', 'to-purple-500', 'text-white', 'shadow-sm');
                 } else {
-                    b.classList.add('bg-emerald-50', 'text-emerald-700');
-                    b.classList.remove('bg-emerald-600', 'text-white');
+                    b.classList.add('bg-white', 'text-gray-600', 'border', 'border-gray-200');
+                    b.classList.remove('bg-gradient-to-r', 'from-indigo-500', 'to-purple-500', 'text-white', 'shadow-sm');
                 }
             });
 
