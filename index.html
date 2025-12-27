@@ -1359,6 +1359,16 @@
                 if (typeof syncTrendLabels === 'function') syncTrendLabels();
                 if (typeof window.filterChart === 'function') window.filterChart(30); // 默认显示30天
             }
+
+            // 如果切换到记录页，根据当前时间自动设置时段
+            if(viewName === 'record') {
+                const now = new Date();
+                const hour = now.getHours();
+                // 凌晨0点到中午12点前 -> 早晨空腹
+                // 中午12点到凌晨0点 -> 晚间睡前
+                const autoPeriod = (hour >= 0 && hour < 12) ? 'morning' : 'night';
+                setWeightPeriod(autoPeriod);
+            }
         };
 
         // 历史筛选标签
