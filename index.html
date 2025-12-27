@@ -48,6 +48,16 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        /* 去除按钮焦点样式 */
+        .workout-btn-morning-cardio:focus,
+        .workout-btn-morning-strength:focus,
+        .workout-btn-evening-cardio:focus,
+        .workout-btn-evening-strength:focus,
+        .workout-btn-night-cardio:focus,
+        .workout-btn-night-strength:focus {
+            outline: none;
+            box-shadow: none;
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 h-screen w-screen overflow-hidden flex flex-col">
@@ -234,43 +244,91 @@
                 
                 <!-- 上午中饭前 - 蓝色 -->
                 <div class="bg-gradient-to-r from-blue-50 to-blue-100/50 rounded-2xl p-4 mb-3">
-                    <div class="flex items-center gap-2 mb-2">
+                    <div class="flex items-center gap-2 mb-3">
                         <span class="text-xs font-semibold text-blue-700">🌅 上午中饭前空腹</span>
+                        <button type="button" onclick="clearWorkoutSlot('morning')" class="ml-auto text-[10px] text-gray-400 hover:text-red-500 transition-all">清空</button>
                     </div>
-                    <div class="flex flex-wrap gap-1.5" id="workout-presets-morning">
-                        <button type="button" onclick="selectWorkoutPreset('morning', 0)" class="workout-preset-btn-morning px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white text-blue-700 border border-blue-200 hover:bg-blue-50 active:scale-95 transition-all shadow-sm">跳绳900</button>
-                        <button type="button" onclick="selectWorkoutPreset('morning', 1)" class="workout-preset-btn-morning px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white text-blue-700 border border-blue-200 hover:bg-blue-50 active:scale-95 transition-all shadow-sm">跳绳1800</button>
-                        <button type="button" onclick="selectWorkoutPreset('morning', 2)" class="workout-preset-btn-morning px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white text-blue-700 border border-blue-200 hover:bg-blue-50 active:scale-95 transition-all shadow-sm">跳绳3000</button>
-                        <button type="button" onclick="selectWorkoutPreset('morning', 3)" class="workout-preset-btn-morning px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white text-blue-700 border border-blue-200 hover:bg-blue-50 active:scale-95 transition-all shadow-sm">无氧30分钟</button>
-                        <button type="button" onclick="selectWorkoutPreset('morning', -1)" class="workout-preset-btn-morning px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white text-gray-500 border border-gray-200 hover:bg-gray-50 active:scale-95 transition-all shadow-sm">未锻炼</button>
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-[10px] text-blue-500 font-medium w-8 shrink-0">有氧</span>
+                            <div class="grid grid-cols-3 gap-1.5 flex-1">
+                                <button type="button" onclick="toggleWorkout('morning', 'cardio', 0)" class="workout-btn-morning-cardio py-1.5 rounded-md text-[11px] font-medium bg-white text-blue-700 border border-blue-200 hover:bg-blue-50 active:scale-95 transition-all text-center" data-idx="0">跳绳900</button>
+                                <button type="button" onclick="toggleWorkout('morning', 'cardio', 1)" class="workout-btn-morning-cardio py-1.5 rounded-md text-[11px] font-medium bg-white text-blue-700 border border-blue-200 hover:bg-blue-50 active:scale-95 transition-all text-center" data-idx="1">跳绳1800</button>
+                                <button type="button" onclick="toggleWorkout('morning', 'cardio', 2)" class="workout-btn-morning-cardio py-1.5 rounded-md text-[11px] font-medium bg-white text-blue-700 border border-blue-200 hover:bg-blue-50 active:scale-95 transition-all text-center" data-idx="2">跳绳3000</button>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-1.5">
+                            <span class="text-[10px] text-blue-500 font-medium w-8 shrink-0 pt-1.5">力量</span>
+                            <div class="grid grid-cols-4 gap-1.5 flex-1">
+                                <button type="button" onclick="toggleWorkout('morning', 'strength', 0)" class="workout-btn-morning-strength py-1.5 rounded-md text-[11px] font-medium bg-white text-blue-700 border border-blue-200 hover:bg-blue-50 active:scale-95 transition-all text-center" data-idx="0">深蹲60</button>
+                                <button type="button" onclick="toggleWorkout('morning', 'strength', 1)" class="workout-btn-morning-strength py-1.5 rounded-md text-[11px] font-medium bg-white text-blue-700 border border-blue-200 hover:bg-blue-50 active:scale-95 transition-all text-center" data-idx="1">哑铃弯举</button>
+                                <button type="button" onclick="toggleWorkout('morning', 'strength', 2)" class="workout-btn-morning-strength py-1.5 rounded-md text-[11px] font-medium bg-white text-blue-700 border border-blue-200 hover:bg-blue-50 active:scale-95 transition-all text-center" data-idx="2">锤式弯举</button>
+                                <button type="button" onclick="toggleWorkout('morning', 'strength', 3)" class="workout-btn-morning-strength py-1.5 rounded-md text-[11px] font-medium bg-white text-blue-700 border border-blue-200 hover:bg-blue-50 active:scale-95 transition-all text-center" data-idx="3">窄距俯卧</button>
+                                <button type="button" onclick="toggleWorkout('morning', 'strength', 4)" class="workout-btn-morning-strength py-1.5 rounded-md text-[11px] font-medium bg-white text-blue-700 border border-blue-200 hover:bg-blue-50 active:scale-95 transition-all text-center" data-idx="4">绳索下压</button>
+                                <button type="button" onclick="toggleWorkout('morning', 'strength', 5)" class="workout-btn-morning-strength py-1.5 rounded-md text-[11px] font-medium bg-white text-blue-700 border border-blue-200 hover:bg-blue-50 active:scale-95 transition-all text-center" data-idx="5">绳索弯举</button>
+                                <button type="button" onclick="toggleWorkout('morning', 'strength', 6)" class="workout-btn-morning-strength py-1.5 rounded-md text-[11px] font-medium bg-white text-blue-700 border border-blue-200 hover:bg-blue-50 active:scale-95 transition-all text-center" data-idx="6">垂式弯举</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- 下午晚饭前 - 橙色 -->
                 <div class="bg-gradient-to-r from-orange-50 to-orange-100/50 rounded-2xl p-4 mb-3">
-                    <div class="flex items-center gap-2 mb-2">
+                    <div class="flex items-center gap-2 mb-3">
                         <span class="text-xs font-semibold text-orange-700">🌇 下午晚饭前空腹</span>
+                        <button type="button" onclick="clearWorkoutSlot('evening')" class="ml-auto text-[10px] text-gray-400 hover:text-red-500 transition-all">清空</button>
                     </div>
-                    <div class="flex flex-wrap gap-1.5" id="workout-presets-evening">
-                        <button type="button" onclick="selectWorkoutPreset('evening', 0)" class="workout-preset-btn-evening px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white text-orange-700 border border-orange-200 hover:bg-orange-50 active:scale-95 transition-all shadow-sm">跳绳900</button>
-                        <button type="button" onclick="selectWorkoutPreset('evening', 1)" class="workout-preset-btn-evening px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white text-orange-700 border border-orange-200 hover:bg-orange-50 active:scale-95 transition-all shadow-sm">跳绳1800</button>
-                        <button type="button" onclick="selectWorkoutPreset('evening', 2)" class="workout-preset-btn-evening px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white text-orange-700 border border-orange-200 hover:bg-orange-50 active:scale-95 transition-all shadow-sm">跳绳3000</button>
-                        <button type="button" onclick="selectWorkoutPreset('evening', 3)" class="workout-preset-btn-evening px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white text-orange-700 border border-orange-200 hover:bg-orange-50 active:scale-95 transition-all shadow-sm">无氧30分钟</button>
-                        <button type="button" onclick="selectWorkoutPreset('evening', -1)" class="workout-preset-btn-evening px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white text-gray-500 border border-gray-200 hover:bg-gray-50 active:scale-95 transition-all shadow-sm">未锻炼</button>
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-[10px] text-orange-500 font-medium w-8 shrink-0">有氧</span>
+                            <div class="grid grid-cols-3 gap-1.5 flex-1">
+                                <button type="button" onclick="toggleWorkout('evening', 'cardio', 0)" class="workout-btn-evening-cardio py-1.5 rounded-md text-[11px] font-medium bg-white text-orange-700 border border-orange-200 hover:bg-orange-50 active:scale-95 transition-all text-center" data-idx="0">跳绳900</button>
+                                <button type="button" onclick="toggleWorkout('evening', 'cardio', 1)" class="workout-btn-evening-cardio py-1.5 rounded-md text-[11px] font-medium bg-white text-orange-700 border border-orange-200 hover:bg-orange-50 active:scale-95 transition-all text-center" data-idx="1">跳绳1800</button>
+                                <button type="button" onclick="toggleWorkout('evening', 'cardio', 2)" class="workout-btn-evening-cardio py-1.5 rounded-md text-[11px] font-medium bg-white text-orange-700 border border-orange-200 hover:bg-orange-50 active:scale-95 transition-all text-center" data-idx="2">跳绳3000</button>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-1.5">
+                            <span class="text-[10px] text-orange-500 font-medium w-8 shrink-0 pt-1.5">力量</span>
+                            <div class="grid grid-cols-4 gap-1.5 flex-1">
+                                <button type="button" onclick="toggleWorkout('evening', 'strength', 0)" class="workout-btn-evening-strength py-1.5 rounded-md text-[11px] font-medium bg-white text-orange-700 border border-orange-200 hover:bg-orange-50 active:scale-95 transition-all text-center" data-idx="0">深蹲60</button>
+                                <button type="button" onclick="toggleWorkout('evening', 'strength', 1)" class="workout-btn-evening-strength py-1.5 rounded-md text-[11px] font-medium bg-white text-orange-700 border border-orange-200 hover:bg-orange-50 active:scale-95 transition-all text-center" data-idx="1">哑铃弯举</button>
+                                <button type="button" onclick="toggleWorkout('evening', 'strength', 2)" class="workout-btn-evening-strength py-1.5 rounded-md text-[11px] font-medium bg-white text-orange-700 border border-orange-200 hover:bg-orange-50 active:scale-95 transition-all text-center" data-idx="2">锤式弯举</button>
+                                <button type="button" onclick="toggleWorkout('evening', 'strength', 3)" class="workout-btn-evening-strength py-1.5 rounded-md text-[11px] font-medium bg-white text-orange-700 border border-orange-200 hover:bg-orange-50 active:scale-95 transition-all text-center" data-idx="3">窄距俯卧</button>
+                                <button type="button" onclick="toggleWorkout('evening', 'strength', 4)" class="workout-btn-evening-strength py-1.5 rounded-md text-[11px] font-medium bg-white text-orange-700 border border-orange-200 hover:bg-orange-50 active:scale-95 transition-all text-center" data-idx="4">绳索下压</button>
+                                <button type="button" onclick="toggleWorkout('evening', 'strength', 5)" class="workout-btn-evening-strength py-1.5 rounded-md text-[11px] font-medium bg-white text-orange-700 border border-orange-200 hover:bg-orange-50 active:scale-95 transition-all text-center" data-idx="5">绳索弯举</button>
+                                <button type="button" onclick="toggleWorkout('evening', 'strength', 6)" class="workout-btn-evening-strength py-1.5 rounded-md text-[11px] font-medium bg-white text-orange-700 border border-orange-200 hover:bg-orange-50 active:scale-95 transition-all text-center" data-idx="6">垂式弯举</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- 下午晚饭后 - 紫色 -->
                 <div class="bg-gradient-to-r from-purple-50 to-purple-100/50 rounded-2xl p-4 mb-4">
-                    <div class="flex items-center gap-2 mb-2">
+                    <div class="flex items-center gap-2 mb-3">
                         <span class="text-xs font-semibold text-purple-700">🌙 下午晚饭后</span>
+                        <button type="button" onclick="clearWorkoutSlot('night')" class="ml-auto text-[10px] text-gray-400 hover:text-red-500 transition-all">清空</button>
                     </div>
-                    <div class="flex flex-wrap gap-1.5" id="workout-presets-night">
-                        <button type="button" onclick="selectWorkoutPreset('night', 0)" class="workout-preset-btn-night px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white text-purple-700 border border-purple-200 hover:bg-purple-50 active:scale-95 transition-all shadow-sm">跳绳900</button>
-                        <button type="button" onclick="selectWorkoutPreset('night', 1)" class="workout-preset-btn-night px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white text-purple-700 border border-purple-200 hover:bg-purple-50 active:scale-95 transition-all shadow-sm">跳绳1800</button>
-                        <button type="button" onclick="selectWorkoutPreset('night', 2)" class="workout-preset-btn-night px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white text-purple-700 border border-purple-200 hover:bg-purple-50 active:scale-95 transition-all shadow-sm">跳绳3000</button>
-                        <button type="button" onclick="selectWorkoutPreset('night', 3)" class="workout-preset-btn-night px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white text-purple-700 border border-purple-200 hover:bg-purple-50 active:scale-95 transition-all shadow-sm">无氧30分钟</button>
-                        <button type="button" onclick="selectWorkoutPreset('night', -1)" class="workout-preset-btn-night px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white text-gray-500 border border-gray-200 hover:bg-gray-50 active:scale-95 transition-all shadow-sm">未锻炼</button>
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-[10px] text-purple-500 font-medium w-8 shrink-0">有氧</span>
+                            <div class="grid grid-cols-3 gap-1.5 flex-1">
+                                <button type="button" onclick="toggleWorkout('night', 'cardio', 0)" class="workout-btn-night-cardio py-1.5 rounded-md text-[11px] font-medium bg-white text-purple-700 border border-purple-200 hover:bg-purple-50 active:scale-95 transition-all text-center" data-idx="0">跳绳900</button>
+                                <button type="button" onclick="toggleWorkout('night', 'cardio', 1)" class="workout-btn-night-cardio py-1.5 rounded-md text-[11px] font-medium bg-white text-purple-700 border border-purple-200 hover:bg-purple-50 active:scale-95 transition-all text-center" data-idx="1">跳绳1800</button>
+                                <button type="button" onclick="toggleWorkout('night', 'cardio', 2)" class="workout-btn-night-cardio py-1.5 rounded-md text-[11px] font-medium bg-white text-purple-700 border border-purple-200 hover:bg-purple-50 active:scale-95 transition-all text-center" data-idx="2">跳绳3000</button>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-1.5">
+                            <span class="text-[10px] text-purple-500 font-medium w-8 shrink-0 pt-1.5">力量</span>
+                            <div class="grid grid-cols-4 gap-1.5 flex-1">
+                                <button type="button" onclick="toggleWorkout('night', 'strength', 0)" class="workout-btn-night-strength py-1.5 rounded-md text-[11px] font-medium bg-white text-purple-700 border border-purple-200 hover:bg-purple-50 active:scale-95 transition-all text-center" data-idx="0">深蹲60</button>
+                                <button type="button" onclick="toggleWorkout('night', 'strength', 1)" class="workout-btn-night-strength py-1.5 rounded-md text-[11px] font-medium bg-white text-purple-700 border border-purple-200 hover:bg-purple-50 active:scale-95 transition-all text-center" data-idx="1">哑铃弯举</button>
+                                <button type="button" onclick="toggleWorkout('night', 'strength', 2)" class="workout-btn-night-strength py-1.5 rounded-md text-[11px] font-medium bg-white text-purple-700 border border-purple-200 hover:bg-purple-50 active:scale-95 transition-all text-center" data-idx="2">锤式弯举</button>
+                                <button type="button" onclick="toggleWorkout('night', 'strength', 3)" class="workout-btn-night-strength py-1.5 rounded-md text-[11px] font-medium bg-white text-purple-700 border border-purple-200 hover:bg-purple-50 active:scale-95 transition-all text-center" data-idx="3">窄距俯卧</button>
+                                <button type="button" onclick="toggleWorkout('night', 'strength', 4)" class="workout-btn-night-strength py-1.5 rounded-md text-[11px] font-medium bg-white text-purple-700 border border-purple-200 hover:bg-purple-50 active:scale-95 transition-all text-center" data-idx="4">绳索下压</button>
+                                <button type="button" onclick="toggleWorkout('night', 'strength', 5)" class="workout-btn-night-strength py-1.5 rounded-md text-[11px] font-medium bg-white text-purple-700 border border-purple-200 hover:bg-purple-50 active:scale-95 transition-all text-center" data-idx="5">绳索弯举</button>
+                                <button type="button" onclick="toggleWorkout('night', 'strength', 6)" class="workout-btn-night-strength py-1.5 rounded-md text-[11px] font-medium bg-white text-purple-700 border border-purple-200 hover:bg-purple-50 active:scale-95 transition-all text-center" data-idx="6">垂式弯举</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -1040,11 +1098,22 @@
             '800ml黑豆浆水（20g黑豆浆粉➕15g亚麻籽粉）➕100g鸡胸肉➕2块欧扎克全麦脆'
         ];
 
-        const WORKOUT_PRESETS = [
+        // 有氧运动预设（跳绳方案，互斥选择）
+        const CARDIO_PRESETS = [
             '跳绳300×3组（共900个）➕开合跳50个➕胯下击掌50个➕原地高抬腿100下',
             '跳绳300×6组（共1800个）➕开合跳100个➕胯下击掌100个➕原地高抬腿200下',
-            '跳绳300×10组（共3000个）➕开合跳150个➕胯下击掌150个➕原地高抬腿300下',
-            '无氧训练30分钟'
+            '跳绳300×10组（共3000个）➕开合跳150个➕胯下击掌150个➕原地高抬腿300下'
+        ];
+
+        // 力量训练预设（可多选）
+        const STRENGTH_PRESETS = [
+            '深蹲20×3组（共60个）',
+            '哑铃弯举10×5组（共50个）',
+            '锤式弯举10×5组（共50个）',
+            '上斜窄距俯卧撑15×5组（共75个）',
+            '绳索下压10×5组（共50个）',
+            '绳索弯举10×5组（共50个）',
+            '体前垂式弯举5×3组（共15个）'
         ];
 
         const WORKOUT_TIME_LABELS = {
@@ -1053,18 +1122,18 @@
             night: '下午晚饭后'
         };
 
-        // 存储各时段选择状态
-        const workoutSelections = {
-            morning: null,  // null=未选, -1=未锻炼, 0-3=方案索引
+        // 存储各时段有氧选择状态（null=未选, 0-2=跳绳方案索引）
+        const workoutCardioSelections = {
+            morning: null,
             evening: null,
             night: null
         };
 
-        // 存储各时段的无氧选择（独立于跳绳）
-        const workoutAnaerobic = {
-            morning: false,
-            evening: false,
-            night: false
+        // 存储各时段力量训练选择状态（Set存储选中的索引）
+        const workoutStrengthSelections = {
+            morning: new Set(),
+            evening: new Set(),
+            night: new Set()
         };
 
         // 选择晚餐方案
@@ -1088,67 +1157,90 @@
             });
         };
 
-        // 选择锻炼方案（分时段，跳绳互斥，无氧独立）
-        window.selectWorkoutPreset = (timeSlot, index) => {
+        // 切换锻炼选项（有氧互斥，力量可多选）
+        window.toggleWorkout = (timeSlot, type, index) => {
+            // 点击后立即失去焦点
+            document.activeElement?.blur();
+            
             const colorMap = {
-                morning: { active: ['bg-blue-500', 'text-white', 'border-blue-500'], inactive: ['bg-white', 'text-blue-700', 'border-blue-200'] },
-                evening: { active: ['bg-orange-500', 'text-white', 'border-orange-500'], inactive: ['bg-white', 'text-orange-700', 'border-orange-200'] },
-                night: { active: ['bg-purple-500', 'text-white', 'border-purple-500'], inactive: ['bg-white', 'text-purple-700', 'border-purple-200'] }
+                morning: { 
+                    active: ['bg-blue-600', 'text-white', 'border-blue-600'], 
+                    inactive: ['bg-white', 'text-blue-700', 'border-blue-200'] 
+                },
+                evening: { 
+                    active: ['bg-orange-500', 'text-white', 'border-orange-500'], 
+                    inactive: ['bg-white', 'text-orange-700', 'border-orange-200'] 
+                },
+                night: { 
+                    active: ['bg-purple-600', 'text-white', 'border-purple-600'], 
+                    inactive: ['bg-white', 'text-purple-700', 'border-purple-200'] 
+                }
             };
             const colors = colorMap[timeSlot];
-            const btnClass = `workout-preset-btn-${timeSlot}`;
-            const btns = document.querySelectorAll(`.${btnClass}`);
-
-            if (index === 3) {
-                // 无氧：切换选中状态（可与跳绳同时选）
-                workoutAnaerobic[timeSlot] = !workoutAnaerobic[timeSlot];
-                const btn = btns[3];
-                if (workoutAnaerobic[timeSlot]) {
-                    btn.classList.remove(...colors.inactive);
-                    btn.classList.add(...colors.active);
+            const allActiveClasses = ['bg-blue-600', 'bg-orange-500', 'bg-purple-600', 'text-white', 'border-blue-600', 'border-orange-500', 'border-purple-600'];
+            
+            if (type === 'cardio') {
+                // 有氧：互斥选择，点击已选中的则取消
+                const btns = document.querySelectorAll(`.workout-btn-${timeSlot}-cardio`);
+                if (workoutCardioSelections[timeSlot] === index) {
+                    // 取消选择
+                    workoutCardioSelections[timeSlot] = null;
+                    btns[index].classList.remove(...allActiveClasses);
+                    btns[index].classList.add(...colors.inactive);
                 } else {
-                    btn.classList.remove(...colors.active);
-                    btn.classList.add(...colors.inactive);
-                }
-            } else if (index === -1) {
-                // 未锻炼：清除该时段所有选择
-                workoutSelections[timeSlot] = -1;
-                workoutAnaerobic[timeSlot] = false;
-                btns.forEach((btn, i) => {
-                    btn.classList.remove(...colors.active, 'bg-gray-500');
-                    if (i === 4) {
-                        // "未锻炼"按钮高亮
-                        btn.classList.add('bg-gray-500', 'text-white', 'border-gray-500');
-                        btn.classList.remove('text-gray-500', 'border-gray-200');
-                    } else if (i < 3) {
-                        btn.classList.add(...colors.inactive);
-                    } else {
-                        btn.classList.add(...colors.inactive);
-                    }
-                });
-            } else {
-                // 跳绳方案（0-2）：互斥选择，取消"未锻炼"状态
-                workoutSelections[timeSlot] = index;
-                btns.forEach((btn, i) => {
-                    if (i < 3) {
-                        // 跳绳按钮
+                    // 选择新的，取消旧的
+                    btns.forEach((btn, i) => {
+                        btn.classList.remove(...allActiveClasses, ...colors.inactive);
                         if (i === index) {
-                            btn.classList.remove(...colors.inactive);
                             btn.classList.add(...colors.active);
                         } else {
-                            btn.classList.remove(...colors.active);
                             btn.classList.add(...colors.inactive);
                         }
-                    } else if (i === 4) {
-                        // 取消"未锻炼"高亮
-                        btn.classList.remove('bg-gray-500', 'text-white', 'border-gray-500');
-                        btn.classList.add('bg-white', 'text-gray-500', 'border-gray-200');
-                    }
-                    // 无氧按钮(i===3)保持原状态
-                });
+                    });
+                    workoutCardioSelections[timeSlot] = index;
+                }
+            } else if (type === 'strength') {
+                // 力量：可多选，切换状态
+                const btns = document.querySelectorAll(`.workout-btn-${timeSlot}-strength`);
+                const btn = btns[index];
+                btn.classList.remove(...allActiveClasses, ...colors.inactive);
+                if (workoutStrengthSelections[timeSlot].has(index)) {
+                    workoutStrengthSelections[timeSlot].delete(index);
+                    btn.classList.add(...colors.inactive);
+                } else {
+                    workoutStrengthSelections[timeSlot].add(index);
+                    btn.classList.add(...colors.active);
+                }
             }
             
             // 生成拼接后的备注
+            updateWorkoutNote();
+        };
+
+        // 清空某时段的所有选择
+        window.clearWorkoutSlot = (timeSlot) => {
+            const colorMap = {
+                morning: { inactive: ['bg-white', 'text-blue-700', 'border-blue-200'] },
+                evening: { inactive: ['bg-white', 'text-orange-700', 'border-orange-200'] },
+                night: { inactive: ['bg-white', 'text-purple-700', 'border-purple-200'] }
+            };
+            const colors = colorMap[timeSlot];
+            const allActiveClasses = ['bg-blue-600', 'bg-orange-500', 'bg-purple-600', 'text-white', 'border-blue-600', 'border-orange-500', 'border-purple-600'];
+            
+            // 清空有氧
+            workoutCardioSelections[timeSlot] = null;
+            document.querySelectorAll(`.workout-btn-${timeSlot}-cardio`).forEach(btn => {
+                btn.classList.remove(...allActiveClasses);
+                btn.classList.add(...colors.inactive);
+            });
+            
+            // 清空力量
+            workoutStrengthSelections[timeSlot].clear();
+            document.querySelectorAll(`.workout-btn-${timeSlot}-strength`).forEach(btn => {
+                btn.classList.remove(...allActiveClasses);
+                btn.classList.add(...colors.inactive);
+            });
+            
             updateWorkoutNote();
         };
 
@@ -1156,55 +1248,74 @@
         function updateWorkoutNote() {
             const parts = [];
             for (const [slot, label] of Object.entries(WORKOUT_TIME_LABELS)) {
-                const jumpIdx = workoutSelections[slot];
-                const hasAnaerobic = workoutAnaerobic[slot];
-                
-                // 未锻炼
-                if (jumpIdx === -1) {
-                    parts.push(`${label}：未锻炼`);
-                    continue;
-                }
+                const cardioIdx = workoutCardioSelections[slot];
+                const strengthSet = workoutStrengthSelections[slot];
                 
                 // 收集该时段的内容
-                const items = [];
-                if (jumpIdx !== null && jumpIdx >= 0 && jumpIdx < 3 && WORKOUT_PRESETS[jumpIdx]) {
-                    items.push(WORKOUT_PRESETS[jumpIdx]);
+                const cardioItems = [];
+                const strengthItems = [];
+                
+                if (cardioIdx !== null && cardioIdx >= 0 && cardioIdx < CARDIO_PRESETS.length) {
+                    cardioItems.push(CARDIO_PRESETS[cardioIdx]);
                 }
-                if (hasAnaerobic) {
-                    items.push(WORKOUT_PRESETS[3]);
+                // 力量训练按索引顺序添加
+                const sortedStrength = [...strengthSet].sort((a, b) => a - b);
+                sortedStrength.forEach(idx => {
+                    if (STRENGTH_PRESETS[idx]) {
+                        strengthItems.push(STRENGTH_PRESETS[idx]);
+                    }
+                });
+                
+                // 组合有氧和力量内容
+                const slotParts = [];
+                if (cardioItems.length > 0) {
+                    slotParts.push(`【有氧】${cardioItems.join('➕')}`);
+                }
+                if (strengthItems.length > 0) {
+                    slotParts.push(`【无氧】${strengthItems.join('➕')}`);
                 }
                 
-                if (items.length > 0) {
-                    parts.push(`${label}：${items.join('➕')}`);
+                if (slotParts.length > 0) {
+                    parts.push(`${label}：${slotParts.join('➕')}`);
                 }
             }
             
             const textarea = document.getElementById('input-workout-note');
-            if (textarea && parts.length > 0) {
-                textarea.value = parts.join('｜');
+            if (textarea) {
+                textarea.value = parts.length > 0 ? parts.join('｜') : '';
             }
         }
 
         // 重置锻炼选择状态
         function resetWorkoutSelections() {
-            workoutSelections.morning = null;
-            workoutSelections.evening = null;
-            workoutSelections.night = null;
-            workoutAnaerobic.morning = false;
-            workoutAnaerobic.evening = false;
-            workoutAnaerobic.night = false;
+            // 重置有氧选择
+            workoutCardioSelections.morning = null;
+            workoutCardioSelections.evening = null;
+            workoutCardioSelections.night = null;
+            
+            // 重置力量选择
+            workoutStrengthSelections.morning.clear();
+            workoutStrengthSelections.evening.clear();
+            workoutStrengthSelections.night.clear();
+            
             // 重置按钮样式
-            document.querySelectorAll('.workout-preset-btn-morning').forEach((btn, i) => {
-                btn.classList.remove('bg-blue-500', 'text-white', 'border-blue-500', 'bg-gray-500', 'border-gray-500');
-                btn.classList.add('bg-white', i < 4 ? 'text-blue-700' : 'text-gray-500', i < 4 ? 'border-blue-200' : 'border-gray-200');
-            });
-            document.querySelectorAll('.workout-preset-btn-evening').forEach((btn, i) => {
-                btn.classList.remove('bg-orange-500', 'text-white', 'border-orange-500', 'bg-gray-500', 'border-gray-500');
-                btn.classList.add('bg-white', i < 4 ? 'text-orange-700' : 'text-gray-500', i < 4 ? 'border-orange-200' : 'border-gray-200');
-            });
-            document.querySelectorAll('.workout-preset-btn-night').forEach((btn, i) => {
-                btn.classList.remove('bg-purple-500', 'text-white', 'border-purple-500', 'bg-gray-500', 'border-gray-500');
-                btn.classList.add('bg-white', i < 4 ? 'text-purple-700' : 'text-gray-500', i < 4 ? 'border-purple-200' : 'border-gray-200');
+            const slotColors = {
+                morning: ['bg-white', 'text-blue-700', 'border-blue-200'],
+                evening: ['bg-white', 'text-orange-700', 'border-orange-200'],
+                night: ['bg-white', 'text-purple-700', 'border-purple-200']
+            };
+            const allActiveClasses = ['bg-blue-600', 'bg-orange-500', 'bg-purple-600', 'text-white', 'border-blue-600', 'border-orange-500', 'border-purple-600'];
+            
+            ['morning', 'evening', 'night'].forEach(slot => {
+                const colors = slotColors[slot];
+                document.querySelectorAll(`.workout-btn-${slot}-cardio`).forEach(btn => {
+                    btn.classList.remove(...allActiveClasses);
+                    btn.classList.add(...colors);
+                });
+                document.querySelectorAll(`.workout-btn-${slot}-strength`).forEach(btn => {
+                    btn.classList.remove(...allActiveClasses);
+                    btn.classList.add(...colors);
+                });
             });
         }
 
